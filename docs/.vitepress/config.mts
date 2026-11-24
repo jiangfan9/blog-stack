@@ -24,7 +24,7 @@ const teekConfig = defineTeekConfig({
   blogger: {
     name: "JiangFan",
     slogan: "写代码，也写生活。记录一路上的思考与风景。",
-    avatar: "/images/avatar.svg",
+    avatar: "/images/avatar.png",
     shape: "circle-rotate",
     circleBgImg: "/images/banner-2.svg",
     circleBgMask: true,
@@ -41,7 +41,7 @@ const teekConfig = defineTeekConfig({
     enabled: true,
     name: "林间小栈",
     bgStyle: "fullImg",
-    imgSrc: ["/images/banner-1.svg", "/images/banner-2.svg", "/images/banner-3.svg"],
+    imgSrc: ["/images/banner-1.png", "/images/banner-2.png", "/images/banner-3.png"],
     imgInterval: 12000,
     imgWaves: true,
     mask: true,

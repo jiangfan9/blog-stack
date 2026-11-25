@@ -1,5 +1,5 @@
 # ---------- 阶段 1：构建静态站点 ----------
-FROM node:20-alpine AS builder
+FROM crpi-u5p8ujqzdgobv4v6.cn-beijing.personal.cr.aliyuncs.com/jfji/node:20-alpine AS builder
 
 WORKDIR /app
 

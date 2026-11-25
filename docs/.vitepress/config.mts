@@ -1,5 +1,24 @@
 import { defineConfig } from "vitepress";
 import { defineTeekConfig } from "vitepress-theme-teek/config";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+
+const docsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+// VitePress 的 lastUpdated 通过 git 读取文件提交时间。
+// 容器/Docker 环境可能没有 git 或没有 .git 目录，此时自动关闭，避免 spawn git ENOENT。
+const enableLastUpdated = (() => {
+  try {
+    execFileSync("git", ["rev-parse", "--is-inside-work-tree"], {
+      cwd: docsDir,
+      stdio: "ignore",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+})();
 
 /**
  * Teek 主题配置
@@ -213,7 +232,7 @@ export default defineConfig({
   description: "记录技术、思考与生活 —— 个人博客",
   lang: "zh-CN",
   cleanUrls: false,
-  lastUpdated: true,
+  lastUpdated: enableLastUpdated,
   head: [
     ["link", { rel: "icon", type: "image/svg+xml", href: "/images/logo.svg" }],
     ["meta", { name: "author", content: "JiangFan" }],

@@ -1,0 +1,82 @@
+import{bV as a,aL as n,u as e,G as p}from"./chunks/framework.BgjPrbJw.js";const m=JSON.parse('{"title":"MyBatis","description":"MyBatis 持久层框架配置、映射与动态 SQL 学习笔记。","frontmatter":{"title":"MyBatis","date":"2021-04-16T00:00:00.000Z","categories":["后端开发"],"tags":["MyBatis","ORM"],"description":"MyBatis 持久层框架配置、映射与动态 SQL 学习笔记。","coverImg":"/images/cover-1.svg","permalink":"/posts/mybatis"},"headers":[],"relativePath":"posts/MyBatis.md","filePath":"posts/MyBatis.md","lastUpdated":1795509423000}'),l={name:"posts/MyBatis.md"};function i(t,s,r,c,b,o){return n(),e("div",null,[...s[0]||(s[0]=[p(`<h1 id="一-mybatis的入门案例" tabindex="-1">一.MyBatis的入门案例 <a class="header-anchor" href="#一-mybatis的入门案例" aria-label="Permalink to &quot;一.MyBatis的入门案例&quot;">​</a></h1><h2 id="_1-步骤" tabindex="-1">1.步骤 <a class="header-anchor" href="#_1-步骤" aria-label="Permalink to &quot;1.步骤&quot;">​</a></h2><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>步骤:</span></span>
+<span class="line"><span>	1.读取配置文件: InputStream inputStream = Resources.getResourceAsStream(&quot;sqlMapperConfig.xml&quot;);</span></span>
+<span class="line"><span>		读取配置文件的时候,一般不用绝对路径和相对路径.</span></span>
+<span class="line"><span>		采用:</span></span>
+<span class="line"><span>			1.使用类加载器.它只能读取类路径的配置文件</span></span>
+<span class="line"><span>			2.使用ServletContext对象的getRealPath()</span></span>
+<span class="line"><span>	2.创建SqlSessionFactory工厂:</span></span>
+<span class="line"><span>		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);</span></span>
+<span class="line"><span>		创建工厂mybatis使用了构建者模式</span></span>
+<span class="line"><span>		构建者模式的优势:</span></span>
+<span class="line"><span>			把对象的创建细节隐藏,使使用者直接调用方法即可拿到对象</span></span>
+<span class="line"><span>	3.创建SqlSession</span></span>
+<span class="line"><span>		生产SqlSession使用了工厂模式</span></span>
+<span class="line"><span>			工厂模式的优势:</span></span>
+<span class="line"><span>				解耦(降低类之间的依赖关系)</span></span>
+<span class="line"><span>	4.创建Dao接口的代理对象</span></span>
+<span class="line"><span>		创建Dao接口实现类使用了代理模式</span></span>
+<span class="line"><span>			代理模式的优势:</span></span>
+<span class="line"><span>				不修改源码的基础上对已有方法增强</span></span>
+<span class="line"><span>	5.执行dao中的方法</span></span>
+<span class="line"><span>	6.释放资源</span></span>
+<span class="line"><span>注意事项:</span></span>
+<span class="line"><span>	不要忘记在映射配置中告知mybatis要封装到哪个实体类中</span></span>
+<span class="line"><span>	配置的方式:指定实体类的全限定类名</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br></div></div><h2 id="_2-mybatis的一些重要对象" tabindex="-1">2.MyBatis的一些重要对象 <a class="header-anchor" href="#_2-mybatis的一些重要对象" aria-label="Permalink to &quot;2.MyBatis的一些重要对象&quot;">​</a></h2><h4 id="resources" tabindex="-1">Resources <a class="header-anchor" href="#resources" aria-label="Permalink to &quot;Resources&quot;">​</a></h4><blockquote><p>作用:读取主配置信息</p></blockquote><h4 id="sqlsessionfactorybuilder" tabindex="-1">SqlSessionFactoryBuilder <a class="header-anchor" href="#sqlsessionfactorybuilder" aria-label="Permalink to &quot;SqlSessionFactoryBuilder&quot;">​</a></h4><blockquote><p>作用:负责创建SqlSessionFactory对象</p></blockquote><h4 id="sqlsessionfactory" tabindex="-1">SqlSessionFactory <a class="header-anchor" href="#sqlsessionfactory" aria-label="Permalink to &quot;SqlSessionFactory&quot;">​</a></h4><blockquote><p>是接口，创建此对象需要使用更多的资源和时间。</p><p>​ 作用是创建SqlSession的工厂，就是创建SqlSession对象。</p><p>​ DefaultSqlSessionFactory是SqlSessionFactory的实现类</p><p>​ SqlSessionFactory中的方法：</p><p>​ openSession():获取一个默认的SqlSession对象，默认是需要手动提交事务的</p><p>​ openSession(boolean):参数表示是否自动提交事务</p><p>​ true:创建一个自动提交事务的SqlSession</p><p>​ false:等同于没有参数的openSession()</p></blockquote><h4 id="sqlsession" tabindex="-1">SqlSession <a class="header-anchor" href="#sqlsession" aria-label="Permalink to &quot;SqlSession&quot;">​</a></h4><blockquote><p>SqlSession是接口</p><p>​ 作用:提供了大量的执行sql语句的方法</p><p>​ DefaultSqlSession是SqlSession的实现类</p></blockquote><h1 id="_2-ognl表达式" tabindex="-1">2.OGNL表达式 <a class="header-anchor" href="#_2-ognl表达式" aria-label="Permalink to &quot;2.OGNL表达式&quot;">​</a></h1><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>Object Graphic Navigation Language</span></span>
+<span class="line"><span>对象     图       导航       语言</span></span>
+<span class="line"><span>他是通过对象的取值方法来获取数据.在写法上把get给省略了</span></span>
+<span class="line"><span>	比如:我们获取用户的名称</span></span>
+<span class="line"><span>		类中的写法:user.getUsername();</span></span>
+<span class="line"><span>		OGNL表达式的写法:user.username</span></span>
+<span class="line"><span>mybatis中为什么能直接写username,而不用user.呢?</span></span>
+<span class="line"><span>	因为在parameterType中已经提供了属性所属的类,所以此时不需要写对象名</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><h1 id="_3-url和uri" tabindex="-1">3.URL和URI <a class="header-anchor" href="#_3-url和uri" aria-label="Permalink to &quot;3.URL和URI&quot;">​</a></h1><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>URL:Uniform Resource Locator 统一资源定位符.他是可以唯一定位一个资源的.</span></span>
+<span class="line"><span>	写法:</span></span>
+<span class="line"><span>	http://localhost:8080/maybatis/demo</span></span>
+<span class="line"><span>	协议    主机      端口    URI</span></span>
+<span class="line"><span>URI:Uniform Resource Identifier 统一资源标识符.它是在应用中可以唯一定位一个资源的</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><h1 id="_4-mybatis中的连接池使用及分析" tabindex="-1">4.mybatis中的连接池使用及分析 <a class="header-anchor" href="#_4-mybatis中的连接池使用及分析" aria-label="Permalink to &quot;4.mybatis中的连接池使用及分析&quot;">​</a></h1><h2 id="_1-连接池" tabindex="-1">1.连接池: <a class="header-anchor" href="#_1-连接池" aria-label="Permalink to &quot;1.连接池:&quot;">​</a></h2><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>连接池:</span></span>
+<span class="line"><span>	我们在实际开发中都会使用连接池</span></span>
+<span class="line"><span>	因为它可以减少我们获取连接所消耗的时间</span></span>
+<span class="line"><span>连接池就是用于存储连接的一个容器</span></span>
+<span class="line"><span>	容器其实就是一个集合对象,该集合必须是线程安全的,不能两个线程拿到统一连接</span></span>
+<span class="line"><span>	该集合还必须实现队列的特性:先进先出</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><h2 id="_2-mybatis中的连接池" tabindex="-1">2.mybatis中的连接池 <a class="header-anchor" href="#_2-mybatis中的连接池" aria-label="Permalink to &quot;2.mybatis中的连接池&quot;">​</a></h2><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>mybatis连接池提供了3种方式的配置:</span></span>
+<span class="line"><span>	配置的位置:</span></span>
+<span class="line"><span>		主配置文件SqlMapConfig.xml中的dataSource标签,type属性就是表示采用何种连接池方式.</span></span>
+<span class="line"><span>	type属性的取值:</span></span>
+<span class="line"><span>		POOLED:采用传统的javax.sql.DataSource规范中的连接池,mybatis中有针对规范的实现</span></span>
+<span class="line"><span>		UNPOOLED:采用传统的获取连接的方式,虽然也实现了javax.sql.DataSource接口,但是并没有使用池的思想.</span></span>
+<span class="line"><span>		JNDI:采用服务器提供的JNDI技术实现,来获取DataSource对象,不同的服务器所能拿到DataSource是不一样的</span></span>
+<span class="line"><span>			注意:如果不是web或者maven的war工程,是不能使用的</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br></div></div><h1 id="_5-mybatis中的事务" tabindex="-1">5.mybatis中的事务 <a class="header-anchor" href="#_5-mybatis中的事务" aria-label="Permalink to &quot;5.mybatis中的事务&quot;">​</a></h1><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>1.什么是事务?</span></span>
+<span class="line"><span>2.事务的四大特性ACID</span></span>
+<span class="line"><span>3.不考虑隔离性会产生的3个问题</span></span>
+<span class="line"><span>4.解决办法:四种隔离级别</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>mybatis是通过Sqlsession对象的commit方法和rollback方法实现事务的提交和回滚</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><h1 id="_6-mybatis中的延迟加载" tabindex="-1">6.mybatis中的延迟加载 <a class="header-anchor" href="#_6-mybatis中的延迟加载" aria-label="Permalink to &quot;6.mybatis中的延迟加载&quot;">​</a></h1><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>什么是延迟加载?</span></span>
+<span class="line"><span>	在真正使用数据时才发起查询,不用的时候不查询.按需加载</span></span>
+<span class="line"><span>什么是立即加载?</span></span>
+<span class="line"><span>	不管用不用,只要一调用方法,马上发起查询</span></span>
+<span class="line"><span>在对应的四种表关系中:一对多,多对一,一对一,多对多</span></span>
+<span class="line"><span>	一对多,多对多:通常情况下我们都是采用延迟加载</span></span>
+<span class="line"><span>	多对一,一对一: 通常情况下我们都是采用立即加载</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><h1 id="_7-mybatis中的缓存" tabindex="-1">7.mybatis中的缓存 <a class="header-anchor" href="#_7-mybatis中的缓存" aria-label="Permalink to &quot;7.mybatis中的缓存&quot;">​</a></h1><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>什么是缓存?</span></span>
+<span class="line"><span>	存在于内存中的临时数据</span></span>
+<span class="line"><span>为什么使用缓存</span></span>
+<span class="line"><span>	减少和数据库的交互次数,提高执行效率</span></span>
+<span class="line"><span>什么样的数据使用缓存,什么样的数据不能使用缓存</span></span>
+<span class="line"><span>	适用于缓存:</span></span>
+<span class="line"><span>		经常查询并且不经常改变的</span></span>
+<span class="line"><span>		数据的正确与否对最终结果影响不大的</span></span>
+<span class="line"><span>	不适用于缓存:</span></span>
+<span class="line"><span>		经常改变的数据</span></span>
+<span class="line"><span>		数据的正确与否对最终结果影响很大的</span></span>
+<span class="line"><span>		例如:商品的库存,银行的汇率,股市的牌价</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br></div></div><h2 id="_1-mybatis中的一级缓存和二级缓存" tabindex="-1">1.mybatis中的一级缓存和二级缓存 <a class="header-anchor" href="#_1-mybatis中的一级缓存和二级缓存" aria-label="Permalink to &quot;1.mybatis中的一级缓存和二级缓存&quot;">​</a></h2><h3 id="一级缓存" tabindex="-1">一级缓存 <a class="header-anchor" href="#一级缓存" aria-label="Permalink to &quot;一级缓存&quot;">​</a></h3><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>它指的是mybatis中sqlsession对象的缓存</span></span>
+<span class="line"><span>当我们执行查询之后,查询的结果会同时存入到sqlsession为我们提供的一块区域中</span></span>
+<span class="line"><span>该区域的结构是一个Map,当我们再次查询同样的数据,mybatis会先去sqlsession中查询是否有,有的话,直接拿出来用</span></span>
+<span class="line"><span>当sqlsession对象消失时,mybatis的一级缓存也消失了</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>清空缓存的方法:</span></span>
+<span class="line"><span>sqlSession.clearCache()</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>一级缓存的分析:</span></span>
+<span class="line"><span>	一级缓存SqlSession范围的缓存,当调用SqlSession的修改,添加,删除,commit(),close()等方法时,就会清空一级缓存</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><h3 id="二级缓存" tabindex="-1">二级缓存 <a class="header-anchor" href="#二级缓存" aria-label="Permalink to &quot;二级缓存&quot;">​</a></h3><div class="language- vp-adaptive-theme line-numbers-mode"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>它是指Mybatis中SqlSessionFactory对象的缓存.由同一个SqlSessionFactory对象创建的SqlSession共享其缓存</span></span>
+<span class="line"><span>二级缓存的步骤:</span></span>
+<span class="line"><span>	第一步:让mybatis框架支持二级缓存(在SqlMapConfig.xml中配置)</span></span>
+<span class="line"><span>	第二步:让当前映射文件支持二级缓存(在当前xml中配置)</span></span>
+<span class="line"><span>	第三步:让当前的操作支持二级缓存(在select标签中配置)</span></span></code></pre><div class="line-numbers-wrapper" aria-hidden="true"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div>`,32)])])}const d=a(l,[["render",i]]);export{m as __pageData,d as default};

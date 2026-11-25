@@ -7,9 +7,11 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "test": "vitepress build docs"
+    "test": "mocha --reporter mochawesome \"test/**/*.test.cjs\""
   },
   "devDependencies": {
+    "mocha": "^12.0.3",
+    "mochawesome": "^8.1.1",
     "vitepress": "^1.6.4",
     "vitepress-theme-teek": "^1.6.3"
   }

@@ -24,9 +24,14 @@ npm run docs:build
 
 # 本地预览构建产物
 npm run docs:preview
+
+# 运行测试（Mocha + Mochawesome，生成 mochawesome-report/mochawesome.json）
+npm test
 ```
 
 预览地址默认为 `http://localhost:4173/`。
+
+测试为项目结构冒烟测试（检查配置、页面、文章 frontmatter、图片资源是否齐全），结果同时输出到控制台与 `mochawesome-report/` 目录下的 HTML / JSON 报告。
 
 ## 目录结构
 

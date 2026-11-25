@@ -1,10 +1,14 @@
 ---
-date: 2026-09-29 01:55:37
 title: Linux
-permalink: /pages/0310bb
+date: 2026-09-29 01:55:37
 categories:
-  
   - 运维
+tags:
+  - Linux
+  - 运维
+description: Linux 操作系统学习笔记，涵盖发行版、常用命令与系统管理等核心内容。
+coverImg: /images/cover-3.svg
+permalink: /pages/0310bb
 ---
 [[toc]]
 

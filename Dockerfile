@@ -13,7 +13,7 @@ RUN npm run docs:build \
     && node scripts/gen-permalink-aliases.mjs
 
 # ---------- 阶段 2：用 nginx 托管静态产物 ----------
-FROM nginx:1.27-alpine
+FROM nginx:1.19.1
 
 # 用自定义配置替换默认配置（支持 VitePress 无扩展名 permalink）
 COPY nginx.conf /etc/nginx/conf.d/default.conf

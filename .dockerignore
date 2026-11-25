@@ -1,0 +1,22 @@
+# 依赖（构建阶段会重新安装）
+node_modules
+
+# 构建产物（构建阶段会重新生成）
+docs/.vitepress/dist
+docs/.vitepress/cache
+
+# 版本控制与本地工具数据
+.git
+.gitignore
+.workbuddy
+
+# 测试报告
+mochawesome-report
+
+# 候选图/临时文件
+*.log
+.DS_Store
+
+# 文档（镜像内不需要）
+README.md
+test

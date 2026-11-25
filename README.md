@@ -33,6 +33,22 @@ npm test
 
 测试为项目结构冒烟测试（检查配置、页面、文章 frontmatter、图片资源是否齐全），结果同时输出到控制台与 `mochawesome-report/` 目录下的 HTML / JSON 报告。
 
+## Docker 部署
+
+多阶段构建：Node 阶段构建静态站点，nginx 阶段托管产物。
+
+```bash
+# 构建镜像
+docker build -t blog-stack .
+
+# 运行容器（映射 8080 端口）
+docker run -d --name blog-stack -p 8080:80 blog-stack
+```
+
+访问 `http://localhost:8080/`。
+
+> 构建阶段会执行 `scripts/gen-permalink-aliases.mjs`，为文章的 permalink 生成对应的 `.html` 别名文件，解决 Linux 下文件名大小写与 permalink 不一致导致的 404 问题。`nginx.conf` 通过 `try_files` 支持无扩展名路径访问。
+
 ## 目录结构
 
 ```

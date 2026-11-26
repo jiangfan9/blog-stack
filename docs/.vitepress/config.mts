@@ -227,6 +227,7 @@ const teekConfig = defineTeekConfig({
  * 文档：https://vitepress.dev/zh/reference/site-config
  */
 export default defineConfig({
+  base: '/blog-stack/',
   extends: teekConfig,
   title: "林间小栈",
   description: "记录技术、思考与生活 —— 个人博客",

@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [后端]
 tags: [Spring, Spring Boot, MVC, Security]
 description: Spring 全家桶学习笔记，涵盖 IoC/AOP、事务、Spring MVC、Spring Security 与 JWT。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Spring.png
 permalink: /posts/spring
 ---
 

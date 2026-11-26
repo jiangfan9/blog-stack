@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [工具]
 tags: [Linux, Shell, 命令行, 运维]
 description: Linux 学习笔记，涵盖常用命令、权限、进程、Shell 脚本、cron/systemd 与 SSH。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Linux.png
 permalink: /posts/linux
 ---
 

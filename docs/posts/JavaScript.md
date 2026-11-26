@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [语言]
 tags: [JavaScript, ES6, 异步, 前端]
 description: JavaScript 语言学习笔记，涵盖变量、闭包、原型链、事件循环、异步编程与高阶技巧。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/JavaScript.png
 permalink: /posts/javascript
 ---
 

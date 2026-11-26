@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [语言]
 tags: [TypeScript, 类型系统, 泛型, 前端]
 description: TypeScript 学习笔记，涵盖类型系统、接口与泛型、类型体操及工程化实践。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/TypeScript.png
 permalink: /posts/typescript
 ---
 

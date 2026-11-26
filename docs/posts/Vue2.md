@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [前端]
 tags: [Vue2, Vue Router, Vuex, 前端]
 description: Vue2 框架学习笔记，涵盖 Options API、组件通信、Vue Router 3、Vuex 3 与 Vue CLI。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Vue2.png
 permalink: /posts/vue2
 ---
 

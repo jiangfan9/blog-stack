@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [后端]
 tags: [MyBatis-Plus, ORM, 分页, 代码生成]
 description: MyBatis-Plus 学习笔记，涵盖 BaseMapper、Wrapper、IService、分页插件与多租户。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/MyBatisPlus.png
 permalink: /posts/mybatis-plus
 ---
 

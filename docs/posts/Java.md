@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [语言]
 tags: [Java, JDK, JVM, 并发]
 description: Java 语言学习笔记，涵盖基础语法、集合框架、Lambda/Stream、JVM、并发与 JDK 8-25 新特性。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Java.png
 permalink: /posts/java
 ---
 

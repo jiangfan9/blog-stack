@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [中间件]
 tags: [Redis, 缓存, 数据结构, 分布式锁]
 description: Redis 学习笔记，涵盖常用命令、持久化、Pipeline/Lua、Cluster 与 Java 客户端实战。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Redis.png
 permalink: /posts/redis
 ---
 

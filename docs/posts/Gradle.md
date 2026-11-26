@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [构建]
 tags: [Gradle, Kotlin DSL, 依赖管理, 插件]
 description: Gradle 构建工具学习笔记，涵盖任务机制、Groovy/Kotlin DSL、多模块、自定义插件与性能优化。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Gradle.png
 permalink: /posts/gradle
 ---
 

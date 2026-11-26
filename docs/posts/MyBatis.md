@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [后端]
 tags: [MyBatis, ORM, 动态SQL, 缓存]
 description: MyBatis 持久层学习笔记，涵盖 XML 映射、动态 SQL、关联映射、缓存与插件开发。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/MyBatis.png
 permalink: /posts/mybatis
 ---
 

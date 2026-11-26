@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [语言]
 tags: [Groovy, JVM, DSL, 元编程]
 description: Groovy 语言学习笔记，涵盖 GDK、闭包、元编程、AST 转换、内部 DSL 与 Spock 测试。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Groovy.png
 permalink: /posts/groovy
 ---
 

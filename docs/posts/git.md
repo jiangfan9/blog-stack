@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [工具]
 tags: [Git, 版本控制, 分支管理, 协作]
 description: Git 学习笔记，涵盖常用命令、分支合并、rebase、stash、reflog 与团队协作规范。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Git.png
 permalink: /posts/git
 ---
 

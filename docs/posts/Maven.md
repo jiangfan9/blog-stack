@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [构建]
 tags: [Maven, 依赖管理, 多模块, 插件]
 description: Maven 构建工具学习笔记，涵盖坐标、依赖仲裁、生命周期、BOM、多模块与私服。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Maven.png
 permalink: /posts/maven
 ---
 

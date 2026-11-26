@@ -4,7 +4,7 @@ date: 2022-07-28
 categories: [前端]
 tags: [Vue3, Composition API, Pinia, Vite]
 description: Vue3 框架学习笔记，涵盖组合式 API、Vue Router 4、Pinia、Vite 及与 Vue2 的差异。
-coverImg: /images/cover-1.svg
+coverImg: /images/cover/Vue3.png
 permalink: /posts/vue3
 ---
 

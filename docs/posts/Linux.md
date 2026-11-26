@@ -1,1989 +1,1133 @@
 ---
 title: Linux
-date: 2026-09-29 01:55:37
-categories:
-  - 运维
-tags:
-  - Linux
-  - 运维
-description: Linux 操作系统学习笔记，涵盖发行版、常用命令与系统管理等核心内容。
-coverImg: /images/cover-3.svg
-permalink: /pages/0310bb
+date: 2022-07-28
+categories: [工具]
+tags: [Linux, Shell, 命令行, 运维]
+description: Linux 学习笔记，涵盖常用命令、权限、进程、Shell 脚本、cron/systemd 与 SSH。
+coverImg: /images/cover-1.svg
+permalink: /posts/linux
 ---
-[[toc]]
 
-## 概述
+# Linux 系统学习文档
 
-> Linux，全称GNU/Linux，是一种免费使用和自由传播的类UNIX操作系统，其内核由林纳斯·本纳第克特·托瓦兹于1991年10月5日首次发布，它主要受到Minix和Unix思想的启发，是一个基于POSIX的多用户、多任务、支持多线程和多CPU的操作系统。
+> 从常用命令到 Shell 脚本，再到系统实战，覆盖 Linux 日常使用与自动化运维的核心技能。  
+> 全文命令与脚本示例基于 **GNU Bash 5.3 + GNU coreutils**，多数示例已在本机 Git Bash（MSYS 环境）实际运行验证。
 
-### 发行版
+---
 
-![linux发行版](https://fanaidi.gitee.io/blogimgs/Linux/Linux发行版.png)
+## 写在前面
 
-## VMware
+### Linux 是什么
 
-下载地址：https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html
+Linux 是一类 Unix 风格的开源操作系统，广泛应用于服务器、嵌入式、云计算与开发环境。学习 Linux 的核心是掌握**命令行**（CLI），因为服务器通常没有图形界面，一切操作都通过命令完成。
 
-## CentOS
+本文档主线：
 
-下载地址：https://www.centos.org/download
+| 篇章   | 内容                             |
+| ---- | ------------------------------ |
+| 第一部分 | 常用命令：文件操作、文本处理、权限、进程、网络、压缩     |
+| 第二部分 | Shell 脚本：变量、条件、循环、函数、数组、调试、实战  |
+| 第三部分 | 进阶实战：管道、定时任务、服务管理、SSH、包管理、最佳实践 |
 
-### 安装步骤
+### 环境说明
 
-先创建一个虚拟机，选择自定义->安装的VMware版本->稍后安装操作系统->Linux CentOS7 64位->选择安装位置，接下来全部默认选择即可。
+| 项目    | 说明                                                            |
+| ----- | ------------------------------------------------------------- |
+| 验证环境  | Git Bash（MSYS / GNU Bash 5.3.15），提供 GNU 核心工具                  |
+| 可验证内容 | grep / sed / awk / find / xargs / tar / 管道重定向 / Shell 语法      |
+| 仅理论说明 | systemctl、crontab、包管理（apt/yum）、用户管理等系统级命令（本机为 Windows，无法实际执行） |
+| 适用发行版 | 命令示例适用于主流发行版（Ubuntu/CentOS/Debian），差异处会标注                     |
+
+> **提示**：Linux 命令的大小写敏感、参数短横线（-）与长参数（--）的区别、空格分隔等细节非常重要，初学时建议逐条敲命令观察输出。
 
-1. 点击CD/DVD配置centos镜像
+### 术语约定
 
-![](https://fanaidi.gitee.io/blogimgs/Linux/centos1.jpg)
+```text
+# 表示 root 用户提示符
+$ 表示普通用户提示符
+command  —— 命令
+[option] —— 可选参数
+<file>   —— 必填参数（文件/路径）
+```
+
+---
+
+# 第一部分：Linux 常用命令
+
+## 1. Linux 目录结构与基础概念
 
-选择使用ISO镜像文件
+### 1.1 目录结构
 
-![](https://fanaidi.gitee.io/blogimgs/Linux/centos2.jpg)
+```text
+/                    根目录
+├── bin/             基础命令（二进制）
+├── etc/             系统配置文件
+├── home/            普通用户家目录
+├── root/            root 用户家目录
+├── usr/             用户程序与资源
+│   ├── bin/         用户命令
+│   └── local/       本地安装软件
+├── var/             可变数据（日志、缓存）
+│   └── log/         日志文件
+├── tmp/             临时文件
+├── opt/             第三方软件
+└── proc/            进程与内核信息（虚拟文件系统）
+```
+
+### 1.2 绝对路径与相对路径
+
+```bash
+pwd                    # 显示当前目录（print working directory）
+cd /etc                # 绝对路径：从根目录开始
+cd ../home             # 相对路径：上一级目录再进 home
+cd ~                   # 进入当前用户家目录
+cd -                   # 返回上一个工作目录
+```
 
-2. 开启此虚拟机
+### 1.3 命令帮助
 
-3. 点击软件选择
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/软件选择.png)
-
-选择GNOME桌面
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/桌面.png)
-
-4. 点击安装位置
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/安装位置.png)
-
-选择我要配置分区
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/配置分区.png)
-
-分区信息如下
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/手动分区.png)
-
-5. 点击开始安装
-
-6. 配置root账户的密码
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/root用户.png)
-
-7. 重启
-
-## Linux文件与目录结构
-
-### Linux文件
-
-> Linux系统中一切皆文件
-
-### Linux目录结构
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/目录结构.png)
-
-/ 代表根目录
-
-~ 代表当前登录用户的主目录
-
-#### 目录简介
-
-/bin 是Binary的缩写，这个目录存放着最经常使用的指令。
-
-/sbin s是Super User的意思，这里存放的是系统管理员使用的系统管理程序。
-
-/home 存放普通用户的主目录，在Linux中每个用户都有一个自己的目录，一般该目录名是以用户的账号命名的。
-
-/root 该目录为系统管理员，也称作超级权限者的用户主目录。
-
-/lib 系统开机所需要最基本的动态连接共享库，起作用类似于windows里的dll文件。几乎所有的应用程序都需要用到这些共享库。
-
-/lost+found 这个目录一般情况下是空的，当系统非法关机后，这里就存放了一些文件。
-
-/etc 所有的系统管理所需要的配置文件和子目录。
-
-/usr  这是一个非常重要的目录，用户的很多应用程序和文件都放在这个目录下，类似于 windows 下的 program files 目录。
-
-/boot 这里存放的是启动 Linux 时使用的一些核心文件，包括一些连接文件以及镜像文件。
-
-/proc 这个目录是一个虚拟的目录，它是系统内存的映射，我们可以通过直接访问这个目录来获取系统信息。
-
-/srv 该目录存放一些服务启动之后需要提取的数据。
-
-/sys 这是 Linux2.6 内核的一个很大的变化。该目录下安装了 2.6 内核中新出现的一个文件系统 sysfs 。
-
-/tmp 这个目录是用来存放一些临时文件的。
-
-/dev 该目录下存放的是 Linux 的外部设备，在 Linux 中访问设备的方式和访问文件的方式是相同的。
-
-/media linux 系统会自动识别一些设备，例如U盘、光驱等等，当识别后，Linux 会把识别的设备挂载到这个目录下。
-
-/mnt 系统提供该目录是为了让用户临时挂载别的文件系统的，我们可以将光驱挂载在 /mnt/ 上，然后进入该目录就可以查看光驱里的内容了。
-
-/opt 这是给主机额外安装软件所摆放的目录。比如你安装一个ORACLE数据库则就可以放到这个目录下。默认是空的。
-
-/var 这个目录中存放着在不断扩充着的东西，我们习惯将那些经常被修改的目录放在这个目录下。包括各种日志文件。
-
-## VIM编辑器
-
-### VI
-
-> VI是Unix操作系统和类Unix操作系统中最通用的文本编辑器。
-
-### VIM
-
-> VIM编辑器是从VI发展出来的一个性能更强大的文本编辑器。可以主动的以字体颜色辨别语法的正确性，方便程序设计。VIM与VI编辑器完全兼容。
-
- ### 模式间转换
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/模式间转换.png)
-
-#### 一般模式
-
-| 语法            | 功能描述                       |
-| --------------- | ------------------------------ |
-| yy              | 复制光标当前一行               |
-| y数字y          | 复制一段（从第几行到第几行）   |
-| p               | 箭头移动到目的行粘贴           |
-| u               | 撤销上一步                     |
-| dd              | 删除光标当前行                 |
-| d数字d          | 删除光标（含）后多少行         |
-| x               | 剪切一个字母，相当于 del       |
-| X               | 剪切一个字母，相当于 Backspace |
-| yw              | 复制一个词                     |
-| dw              | 删除一个词                     |
-| shift+6(^)      | 移动到行头                     |
-| shift+4($)      | 移动到行尾                     |
-| 1+shift+g 或 gg | 移动到页头，数字               |
-| shift+g 或 L    | 移动到页尾                     |
-| 数字+shift+g    | 移动到目标行                   |
-| b               | 移动到上一个词头               |
-| e               | 移动到下一个词尾               |
-
-#### 编辑模式
-
-> 在一般模式中可以进行删除、复制、粘贴等的动作，但是却无法编辑文件内容的！要等到你按下『i, I, o, O, a, A』等任何一个字母之后才会进入编辑模式。按ESC键退出编辑模式，进入一般模式。
-
-| 按键 | 功能               |
-| ---- | ------------------ |
-| i    | 当前光标前         |
-| a    | 当前光标后         |
-| o    | 当前光标行的下一行 |
-| I    | 光标所在行最前     |
-| A    | 光标所在行最后     |
-| O    | 当前光标行的上一行 |
-
-#### 指令模式
-
-> 在一般模式当中，输入『 : / ?』3个中的任何一个按钮，就可以将光标移动到最底下那一行。
-
-| 命令          | 功能                                   |
-| ------------- | -------------------------------------- |
-| :w            | 保存                                   |
-| :q            | 退出                                   |
-| :!            | 强制执行                               |
-| /要查找的词   | n 查找下一个，N 往上查找               |
-| :noh          | 取消高亮显示                           |
-| :set nu       | 显示行号                               |
-| :set nonu     | 关闭行号                               |
-| :s/old/new    | 替换当前行匹配到的第一个old为new       |
-| :s/old/new/g  | 替换当前行匹配到的所有old为new         |
-| :%s/old/new   | 替换文档中每一行匹配到的第一个old为new |
-| :%s/old/new/g | 替换文档中匹配到的所有old为new         |
-
-## 网络配置
-
-### 查看当前网络IP
-
-~~~shell
-ifconfig
-~~~
-
-### ping 测试主机之间网络连通性
-
-~~~shell
-ping 目的主机
-#例
-ping www.baidu.com
-~~~
-
-### 修改IP地址
-
-~~~shell
-vim /etc/sysconfig/network-scripts/ifcfg-ens33
-~~~
-
-![](https://fanaidi.gitee.io/blogimgs/Linux/修改ip.jpg)
-
-执行 service network restart 重启网络
-
-~~~shell
-service network restart
-~~~
-
-### 查看当前服务器的主机名称
-
-~~~shell
-hostname
-~~~
-
-### 修改主机名
-
-~~~shell
-hostnamectl set-hostname xxx
-~~~
-
-## 系统管理
-
-### Linux中的进程和服务
-
-> 计算机中，一个正在执行的程序或命令，被叫做“进程”（process）。
->
-> 启动之后一只存在、常驻内存的进程，一般被称作“服务”（service）。
-
-### service 服务管理
-
-#### CentOS6
-
-**基本语法**
-
-service 服务名 start | stop | restart | status
-
-**经验技巧**
-
-查看服务的方法：/etc/init.d
-
-#### CentOS7
-
-**基本语法**
-
-systemctl   start | stop | restart | status   服务名 
-
-**经验技巧**
-
-查看服务的方法：/usr/lib/systemd/system
-
-### 系统运行级别
-
-**运行级别**
-
-**CentOS6**
-
-开机 -> BIOS -> /boot -> init进程 -> 运行级别 -> 运行级别对应的服务
-
-查看默认级别：vi /etc/inittab
-
-Linux系统有7种运行级别（**常用级别是3和5**）：
-
-- 运行级别0：系统停机状态，系统默认运行级别不能设为0，否则不能正常启动
-- 运行级别1：单用户工作状态，root权限，用于系统维护，禁止远程登录
-- 运行级别2：多用户状态（没有NFS），不支持网络
-- 运行级别3：完全的多用户状态（有NFS），登录后进入控制台命令行模式
-- 运行级别4：系统未使用，保留
-- 运行级别5：X11控制台，登陆后进入图形GUI模式
-- 运行级别6：系统正常关闭并重启，默认运行级别不能设为6，否则不能正常启动
-
-**CentOS7的运行级别简化为：**
-
-muti-user.target 等价于原运行级别3（多用户有网，无图形界面）
-
-graphical.target 等价于原运行级别5（多用户有网，有图形界面）
-
-**查看当前运行级别**
-
-~~~shell
-systemctl get-default
-~~~
-
-**修改当前运行级别**
-
-~~~shell
-# 这里 TARGET.target 取 muti-user 或 graphical
-systemctl set-default TARGET.target
-~~~
-
-**切换运行级别**
-
-~~~shell
-# 切换到运行级别3
-init 3
-~~~
-
-### **配置开机自启动**
-
-~~~shell
-# 防火墙开机自启
-systemctl enable firewalld.service
-# 关闭防火墙开机自启
-systemctl disable firewalld.service
-# 查看防火墙状态
-systemctl status firewalld.service
-# 开启防火墙端口
-firewall-cmd --zone=public --add-port=3306/tcp --permanent
-#重新载入，更新防火墙规则
-firewall-cmd --reload 
-~~~
-
-### 关机重启命令
-
-**基本语法**
-
-~~~shell
-# 将数据由内存同步到硬盘中
-sync
-# 停机，关闭系统，但不断电
-halt
-# 关机，断电
-poweroff
-# 重启 等同于 shutdown -r now
-reboot
-# 关机
-# 选项
-# -H 相当于--halt，停机
-# -r = reboot 重启
-# 参数
-# now 立刻关机
-# 时间 等待多久后关机，时间单位是分钟
-shutdown [选项] 时间
-~~~
-
-## 常用命令
-
-Shell可以看作是一个命令解释器，为我们提供了交互式的文本控制台界面。我们可以通过终端控制台来输入命令，由shell进行解释并最终交给内核执行。
-
-### 帮助命令
-
-#### man 获取帮助信息
-
-**基本语法**
-
-~~~shell
-man [命令或配置文件] (功能描述：获取帮助信息)
-~~~
-
-**显示说明**
-
-| 信息        | 功能                     |
-| ----------- | ------------------------ |
-| NAME        | 命令的名称和单行描述     |
-| SYNOPSIS    | 怎样使用命令             |
-| DESCRIPTION | 命令功能的深入讨论       |
-| EXAMPLES    | 怎样使用命令的例子       |
-| SEE ALSO    | 相关主题（通常是手册页） |
-
-#### help 获取shell内置命令的帮助信息
-
-一部分基础功能的系统命令是直接内嵌在shell中的，系统加载启动之后会随着shell一起加载，常驻系统内存中。这部分命令被称为“内置命令”，相应的其他命令被称为“外部命令”。
-
-**基本语法**
-
-~~~shell
-# 获得shell内置命令的帮助信息
-help 命令
-# 例
-help cd
-ls --help
-~~~
-
-#### 常用快捷键
-
-| 常用快捷键 | 功能                                 |
-| ---------- | ------------------------------------ |
-| ctrl+c     | 停止进程                             |
-| ctrl+l     | 清屏，等同于clear；彻底清屏是：reset |
-| tab        | 提示                                 |
-| 上下键     | 查找执行过的命令                     |
-
-### 文件目录类
-
-#### pwd
-
-显示当前工作目录的绝对路径
-
-pwd：print working directory 打印工作目录
-
-**基本语法**
-
-~~~shell
-pwd
-~~~
-
-#### ls
-
-ls：list 列出目录内容
-
-**基本语法**
-
-~~~shell
-ls [选项] [目录或是文件]
-~~~
-
-**选项说明**
-
-| 选项 | 功能                                                        |
-| ---- | ----------------------------------------------------------- |
-| -a   | 全部的文件，连同隐藏档（开头为 . 的文件）一起列出来（常用） |
-| -l   | 长数据串列出，包含文件的属性与权限等等数据，等价于 ll       |
-
-**显示说明**
-
-每行列出的信息依次是：**文件类型与权限**  **链接数**   **文件属主**   **文件属组**   **文件大小(用byte来表示)**    **建立或最近修改的时间**  **名字**
-
-#### mkdir
-
-mkdir 用于创建目录
-
-**基本语法**
-
-~~~shell
-mkdir [选项] 要创建的目录
-~~~
-
-**常用选项**
-
--p：创建多级目录
-
-#### rmdir
-
-rmdir 删除空目录
-
-**基本语法**
-
-~~~shell
-rmdir [选项] 要删除的空目录
-~~~
-
-**使用细节**
-
-rmdir 删除的是空目录，如果目录下有内容时无法删除
-
-提示：如果需要删除非空目录，需要使用 rm -rf 要删除的目录
-
-#### touch
-
-创建空文件
-
-**基本语法**
-
-~~~shell
-touch 文件名称
-~~~
-
-**注意**
-
-vim 也可以创建空文件，退出的时候使用 :wq 才可以创建，:q 不可以创建。
-
-#### cp
-
-复制文件或目录
-
-**基本语法**
-
-~~~shell
-cp [选项] source dest
-~~~
-
-**选项说明**
-
-| 选项 | 功能               |
-| ---- | ------------------ |
-| -r   | 递归复制整个文件夹 |
-
-**参数说明**
-
-| 参数   | 功能     |
-| ------ | -------- |
-| source | 源文件   |
-| dest   | 目标文件 |
-
-**技巧**
-
-- 强制覆盖不提示的方法：\cp
-
-- \cp 表示使用原生命令
-
-- cp 是 cp -i 的别名
-- alias 可以查看所有命令的别名
-
-#### rm
-
-删除文件或目录
-
-**基本语法**
-
-~~~shell
-rm [选项] deleteFile
-~~~
-
-**选项说明**
-
-| 选项 | 功能                                     |
-| ---- | ---------------------------------------- |
-| -r   | 递归删除目录中所有内容                   |
-| -f   | 强制执行删除操作，而不是提示用于进行确认 |
-| -v   | 显示指令的详细执行过程                   |
-
-#### mv
-
-移动文件与目录或重命名
-
-**基本语法**
-
-~~~shell
-# 重命名
-mv oldNameFile newNameFile
-# 移动文件
-mv /temp/movefile /targetFolder
-~~~
-
-#### cat
-
-查看文件内容，从第一行开始显示
-
-**基本语法**
-
-~~~shell
-cat [选项] 要查看的文件
-~~~
-
-**选项说明**
-
-| 选项 | 功能描述                   |
-| ---- | -------------------------- |
-| -n   | 显示所有行的行号，包括空行 |
-
-**技巧**
-
-一般查看比较小的文件，一个屏幕可以显示全的。
-
-#### more
-
-more指令是一个基于VI编辑器的文本过滤器，它以全屏幕的方式按页显示文本文件的内容。more指令中内置了若干快捷键。详见操作说明。
-
-**基本语法**
-
-~~~shell
-more 要查看的文件
-~~~
-
-**操作说明**
-
-| 操作            | 功能说明                             |
-| --------------- | ------------------------------------ |
-| 空格键（space） | 代表向下翻页                         |
-| Enter           | 代表向下翻一行                       |
-| q               | 代表立刻离开more，不再显示该文件内容 |
-| Ctrl+F          | 向下滚动一屏                         |
-| Ctrl+B          | 返回上屏                             |
-| =               | 输出当前行的行号                     |
-| :f              | 输出文件名和当前行的行号             |
-
-#### less
-
-less指令用来分屏查看文件内容，它的功能与more指令类似，但是比more指令更加强大，支持各种显示终端。less指令在显示文件内容时，并不是一次将整个文件加载之后才显示，而是根据显示需要加载内容，对于显示大型文件具有较高的效率。
-
-**基本语法**
-
-~~~shell
-less 要查看的文件
-~~~
-
-**操作说明**
-
-| 操作     | 功能说明                                           |
-| -------- | -------------------------------------------------- |
-| 空格键   | 向下翻动一页                                       |
-| pagedown | 向下翻动一页                                       |
-| pageup   | 向上翻动一页                                       |
-| /字符串  | 向下搜寻【字符串】的功能，n：向下查找；N：向上查找 |
-| ?字符串  | 向上搜寻【字符串】的功能，n：向下查找；N：向上查找 |
-| q        | 离开 less 这个程序                                 |
-
-#### echo
-
-输出内容到控制台
-
-**基本语法**
-
-~~~shell
-echo [选项] [输出内容]
-~~~
-
-选项：
-
-- -e：支持反斜线控制的字符转换
-
-#### \> 输出重定向 \>\> 追加
-
-**基本语法**
-
-~~~shell
-# 列表的内容写入文件 a.txt 中（覆盖写）
-ls -l > 文件
-# 列表的内容追加到文件aa.txt的末尾
-ls -al >> 文件
-# 将文件1的内容覆盖到文件2
-cat 文件1 > 文件2
-# 将内容追加到文件
-echo "内容" >> 文件
-# 输出环境变量
-echo $USER
-~~~
-
-#### head
-
-用于显示文件的开头部分内容，默认情况下head指令显示文件的前10行内容
-
-**基本语法**
-
-~~~shell
-# 查看文件头10行内容
-head 文件
-# 查看文件头5行内容，5可以是任意行数
-head -n 5 文件
-~~~
-
-**选项说明**
-
-- -n 行数：指定显示头部内容的行数
-
-#### tail
-
-输出文件中尾部的内容，默认情况下tail指令显示文件的后10行内容
-
-**基本语法**
-
-~~~shell
-# 查看文件尾部10行内容
-tail 文件
-# 查看文件尾部5行内容，5可以是任意行数
-tail -n 5 文件
-# 实时追踪该文档的所有更新
-tail -f 文件
-~~~
-
-**选项说明**
-
-- -n 行数：输出文件尾部n行内容
-- -f：显示文件最新追加的内容，监视文件变化
-
-#### ln
-
-软链接也称为符号链接，类似于windows里的快捷方式，有自己的数据块，主要存放了链接其他文件的路径。
-
-**基本语法**
-
-~~~shell
-# 给原文件创建一个软链接
-ln -s [原文件或目录] [软链接名]
-~~~
-
-**技巧**
-
-- 删除软链接：rm -rf 软链接名，而不是rm -rf 软链接名/
-- 如果使用rm -rf 软链接名/ 删除，会把软链接对应的真实目录下内容删掉
-- 查询：通过 ll 就可以查看，列表属性第1位是1，尾部会有位置指向。
-
-#### history
-
-查看已经执行过的历史命令
-
-**基本语法**
-
-~~~shell
-history
-~~~
-
-**技巧**
-
-- history 10 查看已经执行过的10条命令
-- history -c 删除历史命令
-
-### 时间日期类
-
-**基本语法**
-
-~~~shell
-date [option] [+format]
-~~~
-
-**选项说明**
-
-| 选项          | 功能                                             |
-| ------------- | ------------------------------------------------ |
-| -d 时间字符串 | 显示指定的 "时间字符串" 表示的时间，而非当前时间 |
-| -s 日期时间   | 设置系统日期时间                                 |
-
-**参数说明**
-
-<+日期时间格式>：指定显示时使用的日期时间格式
-
-#### 显示当前时间
-
-**基本语法**
-
-~~~shell
-# 显示当前时间
-date
-# 显示当前年份
-date +%Y
-# 显示当前月份
-date +%m
-# 显示当前时哪一天
-date +%d
-# 显示年月日时分秒
-date "+%Y-%m-%d %H:%M:%S"
-# 时间戳
-date +%s
-# 联网获取当前时间
-ntpdate
-~~~
-
-#### 显示非当前时间
-
-**基本语法**
-
-~~~shell
-# 显示前一天时间
-date -d "1 days ago"
-# 显示后一天时间
-date -d "-1 days ago"
-~~~
-
-#### 设置系统时间
-
-**基本语法**
-
-~~~shell
-date -s "2020-01-01 00:00:00"
-~~~
-
-#### 查看日历
-
-**基本语法**
-
-~~~shell
-# 不加选项，显示本月日历
-cal [选项]
-# 示例 查看2020年的日历
-cal 2020
-# 查看当前月前一月、当前月、当前月后一月的日历
-cal -3
-~~~
-
-### 用户管理
-
-#### useradd
-
-添加新用户
-
-**基本语法**
-
-~~~shell
-# 添加新用户
-useradd 用户名
-# 添加新用户到某个组
-useradd -g 组名 用户名
-~~~
-
-#### passwd
-
-给用户修改密码
-
-**基本语法**
-
-~~~shell
-# 给tony用户修改密码
-passwd tony
-~~~
-
-#### id
-
-查看用户是否存在
-
-**基本语法**
-
-~~~shell
-# 查看 tony是否存在
-id tony
-~~~
-
-#### su
-
-切换用户
-
-**基本语法**
-
-~~~shell
-# 切换用户
-su - 用户名
-~~~
-
-#### whoami
-
-查看当前登录用户
-
-**基本语法**
-
-~~~shell
-# 查看当前登录用户
-whoami
-# 查看最开始登录用户
-who am i
-~~~
-
-#### sudo
-
-设置普通用户具有root权限
-
-**基本语法**
-
-~~~shell
-# 切换root用户，修改sudoers配置文件
-vim /etc/sudoers
-# 复制 root    ALL=(ALL)       ALL ，在下面添加，将 root 改成 tony，按 :wq! 强制保存退出
-# 切换 tony 用户 
-su - tony
-# 查看root目录下的内容
-sudo ls /root
-~~~
-
-#### userdel
-
-删除用户
-
-**基本语法**
-
-~~~shell
-userdel 用户名
-# 示例 删除 tony 用户
-userdel tony
-# 验证
-ip tony
-~~~
-
-### 用户组
-
-每个用户都有一个用户组，系统可以对一个用户组中的所有用户进行集中管理。不同Linux系统对用户组的规定有所不同，如Linux下的用户属于与它同名的用户组，这个用户组在创建用户时同时创建。用户组的管理涉及用户组的添加，删除和修改。组的增加、删除和修改实际上就是对 /etc/group文件的更新。
-
-#### groupadd
-
-新增组
-
-**基本语法**
-
-~~~shell
-groupadd 组名
-~~~
-
-#### groupdel
-
-删除组
-
-**基本语法**
-
-~~~shell
-groupdel 组名
-~~~
-
-#### groupmod
-
-修改组
-
-**基本语法**
-
-~~~shell
-# 修改组名
-groupmod -n 新组名 要修改的组名
-# 示例 将 meifa 修改为 haircut
-groupmod -n haircut meifa
-~~~
-
-### 文件权限
-
-#### 文件属性
-
-Linux系统是一种典型的多用户系统，不同的用户处于不同的地位，拥有不同的权限。为了保护系统的安全性，Linux系统对不同的用户访问同一文件（包括目录文件）的权限做了不同的规定。在Linux中我们可以使用 ll 或 ls -l 命令来显示一个文件的属性以及文件所属的用户和组。
-
-从左到右的10个字符表示：
-
-| 文件类型 | 属主权限      | 属组权限      | 其他用户权限  |
-| -------- | ------------- | ------------- | ------------- |
-| d        | r    w     x  | r    -     x  | r    -     x  |
-| 目录文件 | 读  写   执行 | 读  写   执行 | 读  写   执行 |
-
-如果没有权限，就会出现减号【-】。从左至右0-9这些数字来表示：
-
-1. 0：表示类型
-   - 在Linux中第一个字符代表这个文件是目录、文件或链接文件等等
-   - \- 代表文件
-   - d 代表目录
-   - l 链接文件
-2. 1-3：确定属主（该文件的所有者）拥有该文件的权限。--User
-3. 4-6：确定属组（所有者的同组用户）拥有该文件的权限。--Group
-4. 7-9：确定其他用户拥有该文件的权限。--Other
-
-**rwx作用文件和目录的不同解释**
-
-- 作用到文件：
-  - r：代表可读（read），查看
-  - w：代表可写（write），可以修改，但是不代表可以删除该文件，删除一个文件的前提是对该文件所在的目录有写的权限，才能删除该文件。
-  - x：代表可执行（execute），可以被系统执行
-- 作用到目录
-  - r：代表可读（read），可以读取，ls查看目录内容
-  - w：代表可写（write），可以修改，目录内创建+删除+重命名目录
-  - x：代表可执行（execute），可以进入到该目录
-
-#### chmod
-
-改变权限
-
-**基本语法**
-
-~~~shell
-# u:所有者 g：所属组 o:其他用户 a:所有人（u、g、o的总和）
-# +：增加权限 -：删除权限 =：赋权
-chmod [{ugoa}]{+-=}{rwx} 文件或目录
-# 示例 给所有者 赋 rw 权限
-chmod u = rw
-# 所有者没有r权限，给所有者 赋 r 权限
-chmod u + r
-# 所有者有r权限，删除 r 权限
-chmod u - r
-# r：4 w：2 x：1
-chmod [mode=421] [文件或目录]
-~~~
-
-#### chown
-
-改变所有者
-
-**基本语法**
-
-~~~shell
-chown [选项] [最终用户] [文件或目录]
-# 示例 改变 help.txt 文件所有者为tony
-chown tony help.txt
-# 改变 help.txt 文件所有者为tony，所属组为tony
-chown tony:tony help.txt
-~~~
-
-**选项**
-
-- -R：递归操作
-
-#### chgrp
-
-改变所属组
-
-**基本语法**
-
-~~~shell
-chgrp [最终用户组] [文件或目录]
-# 示例 改变 help.txt 所属组为 root
-chgrp root help.txt
-~~~
-
-### 搜索查找
-
-#### find
-
-查找文件或目录
-
-find指令将从指定目录向下递归地遍历其各个子目录，将满足条件的文件显示在终端。
-
-**基本语法**
-
-~~~shell
-find [搜索范围] [选项]
-~~~
-
-**选项说明**
-
-| 选项  | 功能                                                         |
-   | ----- | ------------------------------------------------------------ |
-   | -name | 按照指定的文件名查找模式查找文件                             |
-   | -user | 查找属于指定用户名的所有文件                                 |
-   | -size | 按照指定的文件大小查找文件，单位为：b（块512字节）、c（字节）、w（字2字节）、k（千字节）、M（兆字节）、G（G字节） |
-   #### locate
-
-快速定位文件路径
-
-locate指令利用事先建立的文件系统中所有文件名称及路径的locate数据库实现快速定位给定的文件。locate指令无需遍历整个文件按系统，查询速度较快。为了保证查询结果的准确度，管理员必须定期更新locate时刻。
-
-**基本语法**
-
-~~~shell
-locate 搜索文件
-~~~
-
-**注意**
-
-由于locate指令基于数据库进行查询，所以第一次运行前，必须使用updatedb指令创建locate数据库。
-
-#### grep
-
-过滤查找以及管道符
-
-管道符，"|"，表示将前一个命令的处理结果输出传递给后面的命令处理
-
-**基本语法**
-
-~~~shell
-grep 选项 查找内容源文件
-# 查找某个文件在第几行
-ls | grep -n test
-~~~
-
-**选项说明**
-
-- -n：显示匹配行及行号
-
-### 压缩和解压
-
-#### gzip/gunzip
-
-**基本语法**
-
-~~~shell
-# 压缩文件，只能将文件压缩为*.gz文件
-gzip 文件
-# 解压缩文件
-gunzip 文件.gz
-~~~
-
-**注意**
-
-- 只能压缩文件不能压缩目录
-- 不保留原来的文件
-- 同时多个文件会产生多个压缩包
-
-#### zip和unzip
-
-**基本语法**
-
-~~~shell
-# 压缩文件和目录
-zip [选项] *.zip 将要压缩的内容
-# 解压缩文件
-unzip [选项] *.zip
-~~~
-
-**选项说明**
-
-zip选项
-
-- -r：压缩目录
-
-unzip选项
-
-- -d 目录：指定解压后文件的存放目录
-
-**注意**
-
-zip压缩命令在windows/linux都通用，可以压缩目录且保留源文件。
-
-#### tar
-
-**基本语法**
-
-~~~shell 
-# 打包目录，压缩后的文件格式.tar.gz
-tar [选项] xxx.tar.gz
-# 压缩多个文件
-tar -zcvf tmp.tar.gz hello.txt help.txt
-# 解压缩
-tar -zxvf tmp.tar.gz -C /home
-~~~
-
-**选项说明**
-
-| 选项 | 功能               |
-| ---- | ------------------ |
-| -c   | 产生.tar打包文件   |
-| -v   | 显示详细信息       |
-| -f   | 指定压缩后的文件名 |
-| -z   | 打包同时压缩       |
-| -x   | 解压缩.tar文件     |
-| -C   | 解压到指定目录     |
-
-### 磁盘查看和分区
-
-#### du
-
-查看文件和目录占用的磁盘空间
-
-**基本语法**
-
-~~~shell
-# 显示目录下每个子目录的磁盘使用情况
-du 目录/文件
-~~~
-
-**选项说明**
-
-| 选项          | 功能                                             |
-| ------------- | ------------------------------------------------ |
-| -h            | 以人们较易阅读的GBytes、MBytes、KBytes等格式显示 |
-| -a            | 不仅查看子目录大小，还包括文件                   |
-| -c            | 显示所有的文件和子目录大小后，显示总和           |
-| -s            | 只显示总和                                       |
-| --max-depth=n | 指定统计子目录的深度为第n层                      |
-
-#### df
-
-df：disk free 空余磁盘
-
-**基本语法**
-
-~~~shell
-# 列出文件系统的整体磁盘使用量，检查文件系统的磁盘空间占用情况
-df 选项
-~~~
-
-**选项说明**
-
-- -h：以人们较易阅读的GBytes、MBytes、KBytes等格式显示
-
-#### lsblk
-
-查看设备挂载情况
-
-**基本语法**
-
-~~~shell
-# 查看设备挂载情况
-lsblk
-~~~
-
-**选项说明**
-
-- -f：查看详细的设备挂载情况，显示文件系统信息
-
-#### mount/umount
-
-挂载/卸载
-
-**基本语法**
-
-~~~shell
-# 挂载设备
-mount [-t vfstype] [-o options] device dir
-# 卸载设备
-umount 设备文件名或挂载点
-~~~
-
-**选项说明**
-
-| 参数       | 功能                                                         |
-| ---------- | ------------------------------------------------------------ |
-| -t vfstype | 指定文件系统的类型，通常不必指定。mount会自动选择正确的类型。常用的类型有：光盘或光盘镜像：iso9660、DOS fat16文件系统：msdos、Windows 9x fat32 文件系统：vfat、Window NT ntfs 文件系统：ntfs、Mount Windows 文件网络共享：smbfs 、UNIX（LINUX）文件网络共享：nfs |
-| -o options | 主要用来描述设备或档案的挂载方式。常用的参数有：loop：用来吧一个文件当成硬盘分区挂接上系统、ro：采用只读方式挂接设备、rw：采用读写方式挂接设备、iocharset：指定访问文件系统所有字符集 |
-| decice     | 要挂接（mount）的设备                                        |
-| dir        | 设备在系统上的挂接点（mount point）                          |
-
-#### fdisk
-
-分区
-
-**基本语法**
-
-~~~shell
-# 查看磁盘分区详情
-fdisk -l
-# 对新增硬盘进行分区操作
-fdisk 硬盘设备名
-~~~
-
-**选项说明**
-
-- -l：显示所有硬盘的分区列表
-
-**技巧**
-
-该命令必须在root用户下才能使用
-
-### 进程管理
-
-#### ps
-
-ps：process status 进程状态
-
-**基本语法**
-
-~~~shell
-# 查看系统中所有进程
-ps aux | grep xxx
-# 查看子父进程之间的关系
-ps -ef | grep xxx
-~~~
-
-**选项说明**
-
-| 选项 | 功能                                       |
-| ---- | ------------------------------------------ |
-| a    | 列出带有终端的所有用户的进程               |
-| x    | 列出当前用户的所有进程，包括没有终端的进程 |
-| u    | 面向用户友好的显示风格                     |
-| -e   | 列出所有进程                               |
-| -u   | 列出某个用户关联的所有进程                 |
-| -f   | 显示完整格式的进程列表                     |
-
-**注意**
-
-- 如果想查看进程的CPU占用率和内存占用率，可以使用aux
-- 如果想查看进程的父进程ID可以使用ef
-
-#### kill
-
-终止进程
-
-**基本语法**
-
-~~~shell
-# 通过进程号杀死进程
-kill [选项] 进程号
-# 通过进程名杀死进程，也支持通过通配符，这在系统因负载过大而变得很慢时很有用
-killall 进程名称
-~~~
-
-**选项说明**
-
-- -9：表示强迫进程立即停止
-
-#### top
-
-实时监控系统进程状态
-
-**基本命令**
-
-~~~shell
-top [选项]
-~~~
-
-**选项说明**
-
-| 选项    | 功能                                                         |
-| ------- | ------------------------------------------------------------ |
-| -d 秒数 | 指定top命令每隔几秒更新。默认是3秒在top命令的交互模式当中可以执行的命令 |
-| -i      | 使top不显示任何闲置或者僵死进程                              |
-| -p      | 通过指定监控进程id来仅仅监控某个进程的状态                   |
-
-**操作说明**
-
-| 操作 | 功能                          |
-| ---- | ----------------------------- |
-| P    | 以CPU使用率排序，默认就是此项 |
-| M    | 以内存使用率排序              |
-| N    | 以PID排序                     |
-| q    | 推出top                       |
-
-#### netstat
-
-显示网络状态和端口占用信息
-
-**基本语法**
-
-~~~shell
-# 查看该进程网络信息
-netstat -anp | grep 进程号
-# 查看网络端口号占用情况
-netstat -nlp |grep 端口号
-~~~
-
-**选项说明**
-
-| 选项 | 功能                                     |
-| ---- | ---------------------------------------- |
-| -a   | 显示所有正在监听和未监听的套接字         |
-| -n   | 拒绝显示别名，能显示数字的全部转化为数字 |
-| -l   | 仅列出在监听的服务状态                   |
-| -p   | 表示显示哪个进程在调用                   |
-
-### 系统定时任务
-
-#### 查看crond服务是否启动
-
-~~~shell
-systemctl status crond
-# 如果没有启动，则执行
-systemctl restart crond
-~~~
-
-#### crontab
-
-定时任务设置
-
-**基本语法**
-
-~~~shell
-crontab [选项]
-~~~
-
-**选项说明**
-
-| 选项 | 功能                          |
-| ---- | ----------------------------- |
-| -e   | 编辑crontab定时任务           |
-| -l   | 查询crontab任务               |
-| -r   | 删除当前用户所有的crontab任务 |
-
-\*\*\*\*\* 执行的任务
-
-| 项目      | 含义                 | 范围                    |
-| --------- | -------------------- | ----------------------- |
-| 第一个 \* | 一小时当中的第几分钟 | 0-59                    |
-| 第二个 \* | 一天当中的第几小时   | 0-23                    |
-| 第三个 \* | 一个月当中的第几天   | 1-31                    |
-| 第四个 \* | 一年当中的第几个月   | 1-12                    |
-| 第五个 \* | 一周当中的星期几     | 0-7（0和7都代表星期日） |
-
-特殊符号
-
-| 特殊符号 | 含义                                                         |
-| -------- | ------------------------------------------------------------ |
-| \*       | 代表任何时间。比如第一个 \* 就代表一小时中每分钟都执行一次的意思 |
-| ,        | 代表不连续的时间。比如 "0 8,12,16 * * *",就代表在每天的8点0分，12点0分，16点0分都执行一次命令 |
-| -        | 代表连续的时间范围。比如 "0 5 * * 1-6",代表在周一到周六的凌晨5点0分执行命令 |
-| \*/n     | 代表每隔多久执行一次。比如 "\*/10 * * * *",代表每隔10分钟就执行一遍命令 |
-
-### 软件包管理
-
-#### RPM
-
-##### RPM概述
-
-RPM，RedHat软件包管理工具，类似windows的setup.exe，是Linux这系列操作系统里面的打包工具，它虽然是RedHat的标志，但理念是通用的。
-
-RPM包的名称格式
-
-Apache-1.3.23-11.i386.rpm
-
-- "Apache" 软件名称
-- "1.3.23-11"软件的版本号，主版本与此版本
-- "i386"是软件所运行的硬件平台，Intel32位处理器的统称
-- "rpm"文件扩展名，代表RPM包
-
-##### RPM查询命令
-
-**基本语法**
-
-~~~shell
-rpm -qa
-# 查询详细信息
-rpm -qi firefox
-~~~
-
-##### RPM卸载命令
-
-**基本语法**
-
-~~~shell
-rpm -e RPM软件包
-rpm -e --nodeps 软件包
-~~~
-
-**选项说明**
-
-- -e：卸载软件包
-- --nodeps 卸载软件时，不检查依赖。这样的话，那些使用该软件包的软件在此之后可能就不能正常工作了。
-
-##### RPM安装命令
-
-**基本语法**
-
-~~~shell
-rpm -ivh RPM包全名
-~~~
-
-**选项说明**
-
-- -i：install，安装
-- -v：--verbose，显示详细信息
-- -h：--hash，进度条
-- --nodeps：安装前不检查依赖
-
-#### YUM
-
-YUM（全称为 Yellow dog Updater，Modified）是一个在Fedora 和 RedHat 以及 CentOS 中的 Shell 前端软件包管理器。基于RPM包管理，能够从指定的服务器自动下载RPM包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软件包，无需繁琐地一次下载，安装。
-
-**基本语法**
-
-~~~shell
-yum [选项] [参数]
-~~~
-
-**选项说明**
-
-- -y：对所有都回答"yes"
-
-**参数说明**
-
-| 参数         | 功能                          |
-| ------------ | ----------------------------- |
-| install      | 安装rpm软件包                 |
-| update       | 更新rpm软件包                 |
-| check-update | 检查是否有可用的更新rpm软件包 |
-| remove       | 删除指定的rpm软件包           |
-| list         | 显示软件包信息                |
-| clean        | 清理yum过期的缓存             |
-| deplist      | 显示yum软件包的所有依赖关系   |
-
-**修改YUM源**
-
-~~~shell
-# 安装wget，用来从指定的URL下载文件
-yum install wget
-# 在 /etc/yum.repos.d/目录下，备份默认的repos文件
-# 下载网易 163 或者是 aliyun的repos文件，任选其一
-wget http://mirrors.aliyun.com/repo/Centos-7.repo
-wget http://mirrors.163.com/.help/CentOS7-Base.163.repo
-~~~
-
-## Shell编程
-
-### Shell脚本
-
-**脚本格式**
-
-脚本以#!/bin/bash 开头（指定解析器）
-
-**示例**
-
-~~~shell
-# 创建shell脚本
-vim hello.sh
-# 输入如下内容
+```bash
+command --help         # 查看命令简要帮助
+man command            # 查看命令手册（按 q 退出）
+type command           # 查看命令类型（内建/外部/别名）
+which command          # 查看命令所在路径
+history                # 查看历史命令
+```
+
+## 2. 文件与目录操作
+
+### 2.1 列出目录（ls）
+
+```bash
+ls                     # 列出当前目录
+ls -l                  # 长格式（权限、所有者、大小、时间）
+ls -a                  # 显示隐藏文件（以 . 开头）
+ls -la                 # 组合：长格式 + 隐藏文件
+ls -lh                 # 人类可读的大小（K/M/G）
+ls -lt                 # 按修改时间排序
+ls -R                  # 递归列出子目录
+```
+
+输出示例（`ls -l`）：
+
+```text
+-rw-r--r--  1 user  staff  1024 Jan 10 10:30 notes.txt
+drwxr-xr-x  3 user  staff   128 Jan 11 09:15 docs
+```
+
+第一位：`-` 表示普通文件，`d` 表示目录，`l` 表示软链接。
+
+### 2.2 切换与创建（cd / mkdir / touch）
+
+```bash
+mkdir mydir            # 创建目录
+mkdir -p a/b/c         # 递归创建多级目录（父目录不存在也创建）
+touch file.txt         # 创建空文件 / 更新文件时间戳
+```
+
+### 2.3 复制、移动、删除（cp / mv / rm）
+
+```bash
+cp a.txt b.txt         # 复制文件
+cp -r dir1 dir2        # 递归复制目录
+cp -p src dest         # 保留权限、时间戳等属性
+mv a.txt b.txt         # 移动 / 重命名
+mv a.txt /tmp/         # 移动到目录
+rm file.txt            # 删除文件
+rm -r dir              # 递归删除目录
+rm -f file.txt         # 强制删除（不提示）
+rm -rf dir             # 强制递归删除（危险！谨慎使用）
+```
+
+> **安全提示**：`rm -rf` 极其危险，尤其配合通配符。删除前务必确认路径，生产环境可先用 `echo rm -rf ...` 预览。
+
+### 2.4 查找文件（find）
+
+```bash
+find . -name "*.log"                    # 按名称查找
+find . -type f -name "*.txt"            # 只找普通文件
+find . -type d -name "node_modules"     # 只找目录
+find . -size +100M                      # 大于 100MB 的文件
+find . -mtime -7                        # 7 天内修改过的文件
+find . -name "*.tmp" -delete            # 查找并删除
+find . -name "*.log" -exec grep -l "ERROR" {} \;  # 对结果执行命令
+```
+
+`-exec` 说明：`{}` 代表找到的文件，`\;` 是命令结束标志。
+
+## 3. 查看文件内容
+
+### 3.1 显示全文（cat / less / more）
+
+```bash
+cat file.txt           # 显示整个文件
+cat -n file.txt        # 显示行号
+less file.txt          # 分页查看（q 退出，/ 搜索）
+head -n 10 file.txt    # 显示前 10 行
+tail -n 20 file.txt    # 显示后 20 行
+tail -f app.log        # 实时追踪日志（跟随文件末尾）
+```
+
+### 3.2 统计（wc）
+
+```bash
+wc file.txt            # 统计行数、单词数、字节数
+wc -l file.txt         # 只统计行数
+wc -c file.txt         # 只统计字节数
+echo "hello world" | wc -w   # 只统计单词数（通过管道）
+```
+
+> 验证示例：对 `fruits.txt`（4 行）执行 `wc -l` 输出 `4 fruits.txt`。
+
+## 4. 文本处理三剑客
+
+### 4.1 grep：文本搜索
+
+```bash
+grep "error" app.log              # 查找包含 error 的行
+grep -i "error" app.log           # 忽略大小写
+grep -n "error" app.log           # 显示行号
+grep -v "error" app.log           # 反向匹配（不含 error）
+grep -c "error" app.log           # 统计匹配行数
+grep -r "TODO" ./src              # 递归搜索目录
+grep -E "error|warn" app.log      # 扩展正则（或）
+grep -l "error" *.log             # 只列出匹配的文件名
+```
+
+验证示例（对 `fruits.txt` 内容 `apple 10 / banana 20 / cherry 30 / apple 15`）：
+
+```bash
+grep -n 'apple' fruits.txt
+# 1:apple 10
+# 4:apple 15
+```
+
+### 4.2 sed：流编辑器（替换为主）
+
+```bash
+sed 's/old/new/' file.txt          # 替换每行第一个 old
+sed 's/old/new/g' file.txt         # 全局替换（g = global）
+sed -i 's/old/new/g' file.txt      # 直接修改文件（in-place）
+sed -n '2,5p' file.txt             # 只打印第 2~5 行
+sed '/pattern/d' file.txt          # 删除匹配行
+sed 's/^[ \t]*//' file.txt         # 删除行首空白
+```
+
+验证示例：
+
+```bash
+sed 's/apple/APPLE/' fruits.txt
+# APPLE 10
+# banana 20
+# cherry 30
+# APPLE 15
+```
+
+### 4.3 awk：文本分析与报表
+
+```bash
+awk '{print $1}' file.txt          # 打印第一列（默认空格分隔）
+awk '{print $1, $2}' file.txt      # 打印前两列
+awk -F: '{print $1}' /etc/passwd   # 指定冒号为分隔符
+awk '$2 > 15 {print $1}' fruits.txt   # 条件过滤
+awk '{sum+=$2} END{print sum}' fruits.txt   # 求和
+```
+
+验证示例：
+
+```bash
+awk '{sum+=$2} END{print "total="sum}' fruits.txt
+# total=75
+
+awk '{s[$1]+=$2} END{for(k in s) print k,s[k]}' fruits.txt | sort
+# apple 25
+# banana 20
+# cherry 30
+```
+
+### 4.4 辅助工具（cut / sort / uniq / tr）
+
+```bash
+cut -d' ' -f1 fruits.txt           # 按空格分隔取第 1 列
+sort fruits.txt                    # 排序
+sort -n fruits.txt                 # 数值排序
+sort -r fruits.txt                 # 逆序
+uniq                               # 去重（通常配合 sort）
+uniq -c                            # 统计重复次数
+tr 'a-z' 'A-Z'                     # 大小写转换
+```
+
+验证示例：
+
+```bash
+cut -d' ' -f1 fruits.txt | sort | uniq -c
+#       2 apple
+#       1 banana
+#       1 cherry
+```
+
+## 5. 权限管理
+
+### 5.1 权限表示
+
+```text
+-rwxr-xr--  1 user group  size  file
+│└──┬──┘└─┬──┘
+│   │     └── 其他用户权限（r--）
+│   └──────── 组用户权限（rwx）
+└──────────── 文件类型（- 文件，d 目录，l 链接）
+
+权限字符：r=读(4)  w=写(2)  x=执行(1)  -=无权限(0)
+```
+
+### 5.2 chmod：修改权限
+
+```bash
+chmod 755 script.sh        # 数字法：rwxr-xr-x
+chmod u+x script.sh        # 符号法：给所有者加执行权限
+chmod g-w file.txt         # 去掉组写权限
+chmod a+r file.txt         # 所有人加读权限
+chmod -R 755 dir           # 递归修改目录权限
+```
+
+常用权限值：
+
+| 数值  | 权限        | 含义              |
+| --- | --------- | --------------- |
+| 644 | rw-r--r-- | 普通文件（可读写，其他人只读） |
+| 755 | rwxr-xr-x | 可执行程序/脚本        |
+| 600 | rw------- | 仅自己可读写（私密文件）    |
+| 777 | rwxrwxrwx | 所有人可读写执行（谨慎使用）  |
+
+### 5.3 chown：修改所有者
+
+```bash
+chown user file.txt            # 修改所有者
+chown user:group file.txt      # 修改所有者和组
+chown -R user:group dir        # 递归修改
+```
+
+## 6. 用户与组（理论）
+
+> 以下命令需 root 权限，本机 Windows 环境无法实际执行，仅作语法说明。
+
+```bash
+whoami                    # 查看当前用户
+id                        # 查看用户 ID 与所属组
+useradd alice             # 创建用户
+passwd alice              # 设置密码
+usermod -aG sudo alice    # 将用户加入 sudo 组
+userdel alice             # 删除用户
+groupadd dev              # 创建组
+su - alice                # 切换用户
+sudo command              # 以管理员权限执行
+```
+
+## 7. 进程管理（部分可验证）
+
+```bash
+ps                        # 查看当前进程
+ps aux                    # 查看所有进程（BSD 风格）
+ps -ef                    # 查看所有进程（System V 风格）
+ps aux | grep nginx       # 查找特定进程
+top                       # 动态查看进程（类似任务管理器）
+htop                      # top 的增强版（需安装）
+kill 1234                 # 终止进程（PID）
+kill -9 1234              # 强制终止
+killall nginx             # 按名称终止进程
+jobs                      # 查看后台任务
+nohup command &           # 后台运行（退出终端不中断）
+```
+
+> 本机 Git Bash 支持 `ps`、`kill` 等命令，但输出格式与 Linux 略有差异；`top`/`systemctl` 不适用。
+
+## 8. 磁盘与系统信息
+
+```bash
+df -h                     # 磁盘使用情况（人类可读）
+du -sh dir                # 目录总大小
+du -h --max-depth=1       # 各子目录大小
+free -h                   # 内存使用情况（Linux）
+uname -a                  # 系统信息
+uptime                    # 运行时间与负载
+date                      # 当前时间
+```
+
+## 9. 网络命令（部分可验证）
+
+```bash
+ping host                 # 测试连通性
+curl https://example.com  # 请求 URL（本机可用）
+wget url                  # 下载文件
+ifconfig / ip addr        # 查看网络接口（Linux）
+netstat -tuln             # 查看监听端口（Linux）
+ss -tuln                  # netstat 的替代（Linux）
+ssh user@host             # 远程登录
+scp file user@host:/path  # 远程复制文件
+```
+
+## 10. 压缩与归档
+
+```bash
+# tar：归档（常配合 gzip）
+tar -cvf archive.tar dir       # 打包（c=创建，v=详细，f=文件）
+tar -xvf archive.tar           # 解包
+tar -czvf archive.tar.gz dir   # 打包 + gzip 压缩
+tar -xzvf archive.tar.gz       # 解压 gzip 包
+tar -tzf archive.tar.gz        # 查看压缩包内容
+
+# gzip / zip
+gzip file.txt                  # 压缩为 file.txt.gz
+gunzip file.txt.gz             # 解压
+zip -r archive.zip dir         # 递归压缩为 zip
+unzip archive.zip              # 解压 zip
+```
+
+常用参数记忆：
+
+| 参数 | 含义           |
+| -- | ------------ |
+| -c | create，创建归档  |
+| -x | extract，解包   |
+| -z | gzip，压缩/解压   |
+| -v | verbose，显示过程 |
+| -f | file，指定文件名   |
+| -t | list，查看内容    |
+
+---
+
+# 第二部分：Shell 脚本
+
+## 1. 第一个 Shell 脚本
+
+Shell 脚本是包含一系列命令的文本文件，由 Shell 解释器执行。
+
+```bash
 #!/bin/bash
-echo "hello shell"
-# 执行脚本
-sh hello.sh
-# 给 hello.sh 赋 x 权限
+# 第一个脚本：hello.sh
+echo "Hello, Shell!"
+
+name="World"
+echo "Hello, $name!"
+```
+
+运行方式：
+
+```bash
+# 方式一：用 bash 解释执行
+bash hello.sh
+
+# 方式二：赋予执行权限后直接运行
 chmod +x hello.sh
-# 执行脚本
 ./hello.sh
-~~~
+```
 
-### 变量
+脚本开头 `#!/bin/bash` 称为 shebang，指定解释器。
 
-#### 常用系统变量
+## 2. 变量
 
-$HOME、$PWD、$SHELL、$USER等。
+### 2.1 定义与使用
 
-**查看系统变量的值**
+```bash
+#!/bin/bash
+name="Alice"          # 定义变量（等号两边不能有空格）
+age=20
+echo "Name: $name, Age: $age"
+echo "Name: ${name}!"  # 花括号界定变量名边界
 
-~~~shell
-# 查看系统变量的值
-echo $HOME
-# 显示当前shell中所有变量：set
-set
+# 只读变量
+readonly PI=3.14
+
+# 环境变量导出
+export MY_VAR="value"
+```
+
+### 2.2 变量作用域与特殊变量
+
+```bash
+#!/bin/bash
+echo "脚本名: $0"
+echo "第一个参数: $1"
+echo "第二个参数: $2"
+echo "参数个数: $#"
+echo "所有参数: $@"
+echo "上一个命令退出码: $?"
+echo "当前进程 PID: $$"
+```
+
+运行 `bash script.sh a b` 输出：
+
+```text
+脚本名: script.sh
+第一个参数: a
+第二个参数: b
+参数个数: 2
+所有参数: a b
+上一个命令退出码: 0
+当前进程 PID: 12345
+```
+
+### 2.3 命令替换
+
+```bash
+#!/bin/bash
+now=$(date)              # 命令替换（推荐 $() 语法）
+files=$(ls -l)
+echo "当前时间: $now"
+
+# 旧写法（反引号，不推荐）
+old_style=`date`
+```
+
+## 3. 引号的区别
+
+```bash
+#!/bin/bash
+name="Alice"
+
+echo "$name"       # 双引号：变量会展开 → Alice
+echo '$name'       # 单引号：原样输出   → $name
+echo \$name        # 反斜杠转义        → $name
+echo "Hello, ${name}!"  # 花括号明确边界
+```
+
+## 4. 条件判断
+
+### 4.1 if 语句
+
+```bash
+#!/bin/bash
+score=85
+
+if [ $score -ge 90 ]; then
+    echo "优秀"
+elif [ $score -ge 60 ]; then
+    echo "及格"
+else
+    echo "不及格"
+fi
+```
+
+> 注意：`[` 是命令，左右两边必须有空格。`then` 前用分号或换行。
+
+### 4.2 测试条件
+
+```bash
+# 数值比较
+[ $a -eq $b ]    # 等于
+[ $a -ne $b ]    # 不等于
+[ $a -gt $b ]    # 大于
+[ $a -lt $b ]    # 小于
+[ $a -ge $b ]    # 大于等于
+[ $a -le $b ]    # 小于等于
+
+# 字符串比较
+[ "$a" = "$b" ]  # 相等
+[ "$a" != "$b" ] # 不等
+[ -z "$a" ]      # 空字符串
+[ -n "$a" ]      # 非空字符串
+
+# 文件测试
+[ -f file ]      # 是普通文件
+[ -d dir ]       # 是目录
+[ -e path ]      # 存在
+[ -r file ]      # 可读
+[ -x file ]      # 可执行
+
+# 逻辑组合
+[ $a -gt 0 ] && [ $b -gt 0 ]   # 与
+[ $a -gt 0 ] || [ $b -gt 0 ]   # 或
+```
+
+
+### 4.3 case 语句
+
+```bash
+#!/bin/bash
+read -p "输入一个字母: " ch
+
+case $ch in
+    [a-z]) echo "小写字母" ;;
+    [A-Z]) echo "大写字母" ;;
+    [0-9]) echo "数字" ;;
+    *)     echo "其它字符" ;;
+esac
+```
+
+## 5. 循环
+
+### 5.1 for 循环
+
+```bash
+#!/bin/bash
+# 遍历列表
+for fruit in apple banana cherry; do
+    echo "水果: $fruit"
+done
+
+# 数字范围
+for i in {1..5}; do
+    echo "数字: $i"
+done
+
+# C 风格
+for ((i=0; i<5; i++)); do
+    echo "i=$i"
+done
+```
+
+### 5.2 while 与 until
+
+```bash
+#!/bin/bash
+count=1
+while [ $count -le 3 ]; do
+    echo "count=$count"
+    count=$((count + 1))    # 算术运算
+done
+
+# until：条件为假时执行
+n=1
+until [ $n -gt 3 ]; do
+    echo "n=$n"
+    n=$((n+1))
+done
+```
+
+### 5.3 循环控制
+
+```bash
+#!/bin/bash
+for i in {1..5}; do
+    if [ $i -eq 3 ]; then
+        continue         # 跳过本次
+    fi
+    if [ $i -eq 5 ]; then
+        break            # 结束循环
+    fi
+    echo "i=$i"
+done
+# 输出：i=1 i=2 i=4
+```
+
+## 6. 函数
+
+```bash
+#!/bin/bash
+# 定义函数
+greet() {
+    local name=$1        # local：局部变量
+    echo "Hello, $name!"
+}
+
+# 调用函数
+greet "Alice"
+greet "Bob"
+
+# 带返回值的函数
+add() {
+    local sum=$(($1 + $2))
+    echo $sum            # 通过 echo 返回结果
+}
+
+result=$(add 3 5)
+echo "3 + 5 = $result"
+
+# return 只能返回 0~255 的整数（退出码）
+is_even() {
+    return $(($1 % 2))   # 偶数返回 0，奇数返回 1
+}
+if is_even 4; then echo "4 是偶数"; fi
+```
+
+## 7. 数组
+
+```bash
+#!/bin/bash
+# 定义数组
+fruits=("apple" "banana" "cherry")
+
+# 访问元素（下标从 0 开始）
+echo ${fruits[0]}        # apple
+echo ${fruits[1]}        # banana
+
+# 所有元素
+echo ${fruits[@]}        # apple banana cherry
+echo ${fruits[*]}        # apple banana cherry
+
+# 数组长度
+echo ${#fruits[@]}       # 3
+
+# 遍历
+for fruit in "${fruits[@]}"; do
+    echo "水果: $fruit"
+done
+
+# 修改元素
+fruits[0]="APPLE"
+echo ${fruits[0]}        # APPLE
+```
+
+## 8. 字符串处理
+
+```bash
+#!/bin/bash
+s="Hello, World!"
+
+echo ${#s}               # 字符串长度：13
+echo ${s:0:5}            # 子串（从 0 开始取 5 个）：Hello
+echo ${s:7}              # 从位置 7 到结尾：World!
+echo ${s/World/Linux}    # 替换第一个：Hello, Linux!
+echo ${s//l/L}           # 替换所有 l：HeLLo, WorLd!
+
+# 默认值
+echo ${name:-"default"}  # 变量为空时用默认值（不改变原变量）
+echo ${name:="default"}  # 变量为空时赋值默认值（会修改原变量！）
+echo $name               # 此时 name 已被赋值为 default
+```
+
+## 9. 输入、输出与重定向
+
+### 9.1 标准输入输出
+
+```bash
+echo "hello"             # 输出到标准输出
+read name                # 从标准输入读取
+read -p "请输入姓名: " name   # 带提示的读取
+read -s -p "密码: " pwd      # 静默读取（不回显）
+```
+
+### 9.2 重定向
+
+```bash
+command > file.txt       # 标准输出覆盖写入文件
+command >> file.txt      # 标准输出追加到文件
+command 2> error.log     # 标准错误写入文件
+command > out.log 2>&1   # 输出和错误都写入同一文件
+command &> all.log       # 同上（简写）
+command < input.txt      # 从文件读取输入
+```
+
+### 9.3 管道
+
+```bash
+cat fruits.txt | grep apple | wc -l
+# 统计含 apple 的行数 → 2
+
+ps aux | grep nginx | grep -v grep
+# 查找 nginx 进程（排除 grep 自身）
+```
+
+## 10. 算术运算
+
+```bash
+#!/bin/bash
+a=10
+b=3
+
+echo $((a + b))          # 13
+echo $((a - b))          # 7
+echo $((a * b))          # 30
+echo $((a / b))          # 3（整数除法）
+echo $((a % b))          # 1（取余）
+
+# 自增
+((a++))
+echo $a                  # 11
+
+# 浮点运算需借助 bc
+echo "scale=2; 10 / 3" | bc    # 3.33（需安装 bc）
+```
+
+## 11. 正则表达式（grep -E）
+
+```bash
+#!/bin/bash
+# 常用正则元字符：^ 开头  $ 结尾  . 任意字符  * 重复  [] 字符集合
+
+echo "apple" | grep -E '^a'        # 以 a 开头
+echo "apple" | grep -E 'e$'        # 以 e 结尾
+echo "color colour" | grep -E 'colou?r'   # ? 表示前一个字符可选
+
+# 实战：校验邮箱格式（简化版）
+email="user@example.com"
+if echo "$email" | grep -Eq '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'; then
+    echo "邮箱格式正确"
+else
+    echo "邮箱格式错误"
+fi
+```
+
+## 12. 调试与错误处理
+
+```bash
+#!/bin/bash
+# 调试模式
+set -x                   # 打印每条执行的命令（调试）
+set -e                   # 命令失败时立即退出
+set -u                   # 使用未定义变量时报错
+set -o pipefail          # 管道中任一命令失败则整体失败
+
+# 推荐组合（脚本开头）
+set -euo pipefail
+
+# 错误处理
+if ! command; then
+    echo "命令执行失败" >&2
+    exit 1
+fi
+
+#  trap：捕获退出信号做清理
+trap 'echo "脚本退出，执行清理"' EXIT
+```
+
+## 13. 实战脚本案例
+
+### 13.1 批量重命名
+
+```bash
+#!/bin/bash
+# 将当前目录下所有 .txt 文件重命名为 .bak
+for file in *.txt; do
+    [ -e "$file" ] || continue    # 无匹配文件时跳过
+    mv "$file" "${file%.txt}.bak"
+    echo "重命名: $file → ${file%.txt}.bak"
+done
+```
+
+### 13.2 日志分析
+
+```bash
+#!/bin/bash
+# 统计日志中不同级别的出现次数
+LOG_FILE=${1:-app.log}
+
+if [ ! -f "$LOG_FILE" ]; then
+    echo "错误: 文件 $LOG_FILE 不存在" >&2
+    exit 1
+fi
+
+echo "=== 日志级别统计 ==="
+grep -oE 'ERROR|WARN|INFO' "$LOG_FILE" | sort | uniq -c | sort -rn
+```
+
+### 13.3 系统健康检查
+
+```bash
+#!/bin/bash
+# 系统健康检查脚本（概念示例，部分命令需 Linux）
+set -euo pipefail
+
+echo "=== 系统健康检查 ==="
+echo "时间: $(date)"
+echo "磁盘使用:"
+df -h | head -5
+
+echo "内存使用:"
+free -h 2>/dev/null || echo "（当前环境不支持 free）"
+
+echo "CPU 负载:"
+uptime
+
+# 检查磁盘使用率是否超过 90%
+usage=$(df -h / | tail -1 | awk '{print $5}' | tr -d '%')
+if [ "$usage" -gt 90 ]; then
+    echo "警告: 磁盘使用率 ${usage}% 超过 90%!" >&2
+fi
+```
+
+### 13.4 备份脚本
+
+```bash
+#!/bin/bash
+# 按日期打包备份指定目录
+SOURCE_DIR=${1:-./data}
+BACKUP_DIR=${2:-./backups}
+DATE=$(date +%Y%m%d)
+
+mkdir -p "$BACKUP_DIR"
+tar -czf "$BACKUP_DIR/backup_${DATE}.tar.gz" -C "$(dirname "$SOURCE_DIR")" "$(basename "$SOURCE_DIR")"
+
+if [ $? -eq 0 ]; then
+    echo "备份成功: $BACKUP_DIR/backup_${DATE}.tar.gz"
+else
+    echo "备份失败" >&2
+    exit 1
+fi
+```
+
+---
+
+# 第三部分：Linux 进阶与实战
+
+## 1. 管道与重定向深入
+
+### 1.1 组合命令解决复杂问题
+
+```bash
+# 统计当前目录下各扩展名的文件数量
+find . -type f | sed 's/.*\.//' | sort | uniq -c | sort -rn
+
+# 找出占用空间最大的 10 个文件
+find . -type f -exec du -h {} + | sort -rh | head -10
+
+# 统计代码行数（排除空行和注释）
+find . -name "*.sh" -exec cat {} + | grep -v '^\s*#' | grep -v '^\s*$' | wc -l
+```
+
+### 1.2 tee 命令
+
+```bash
+command | tee output.txt          # 输出到屏幕同时写入文件
+command | tee -a output.txt       # 追加写入
+```
+
+## 2. 环境变量
+
+```bash
+# 查看环境变量
 env
-~~~
+printenv
+echo $PATH
+echo $HOME
 
-#### 自定义变量
+# 临时设置（仅当前命令）
+MY_VAR=value command
 
-**基本语法**
+# 导出到子进程
+export MY_VAR=value
 
-- 定义变量：变量名=变量值，**注意：=号前后不能有空格**
-- 撤销变量：unset 变量名
-- 声明静态变量：readonly 变量，注意：不能unset
+# 配置文件（登录时加载）
+# ~/.bashrc   —— 交互式 shell
+# ~/.bash_profile / ~/.profile —— 登录 shell
+```
 
-**变量定义规则**
+添加 PATH 示例：
 
-- 变量名称可以由字母、数字和下划线组成，但是不能以数字开头，**环境变量名建议大写**
-- 等号两侧不能有空格
-- 在bash中，变量默认类型都是字符串类型，无法直接进行数值运算。
-- 变量的值如果有空格，需要使用双引号或单引号括起来
+```bash
+# 在 ~/.bashrc 末尾添加
+export PATH="$PATH:/home/user/mybin"
 
-#### 特殊变量
+# 使配置立即生效
+source ~/.bashrc
+```
 
-##### $n
+## 3. 定时任务 cron（理论）
 
-**基本语法**
+> cron 是 Linux 系统级定时任务服务，本机无法实际执行，仅作语法说明。
 
-功能描述：n为数字，$0代表该脚本名称，$1-$9代表第一到第九个参数，10以上的参数需要用大括号包含，如${10}
+```bash
+crontab -e              # 编辑当前用户的定时任务
+crontab -l              # 列出定时任务
+crontab -r              # 删除所有定时任务
+```
 
-~~~shell
-$n 
-~~~
+cron 表达式格式：
 
-**示例**
+```text
+分 时 日 月 周  命令
+*  *  *  *  *   command
+```
 
-~~~shell
-echo '---------------------$n------------------'
-echo script name: $0
-echo 1st parameter $1
-~~~
+```bash
+# 每 5 分钟执行一次
+*/5 * * * * /path/to/script.sh
 
-##### $#
+# 每天凌晨 2 点执行
+0 2 * * * /path/to/backup.sh
 
-**基本语法**
+# 每周一上午 9 点执行
+0 9 * * 1 /path/to/report.sh
 
-功能描述：获取所有输入参数个数，常用于循环，判断参数的个数是否正确以及加强脚本的健壮性
+# 每月 1 日凌晨执行
+0 0 1 * * /path/to/monthly.sh
+```
 
-~~~shell
-$#
-~~~
+## 4. 服务管理 systemd（理论）
 
-**示例**
+```bash
+systemctl status nginx       # 查看服务状态
+systemctl start nginx        # 启动服务
+systemctl stop nginx         # 停止服务
+systemctl restart nginx      # 重启服务
+systemctl enable nginx       # 设置开机自启
+systemctl disable nginx      # 取消开机自启
+systemctl list-units --type=service  # 列出所有服务
+journalctl -u nginx -f       # 查看服务日志
+```
 
-~~~shell
-echo '---------------------$n------------------'
-echo parameter num:$#
-~~~
+## 5. 远程操作 SSH / SCP
 
-##### $*、$@
+```bash
+# SSH 登录
+ssh user@192.168.1.100
+ssh -p 2222 user@host        # 指定端口
 
-**基本语法**
+# SCP 复制
+scp file.txt user@host:/remote/path/          # 上传
+scp user@host:/remote/file.txt ./local/       # 下载
+scp -r dir user@host:/remote/path/            # 递归复制目录
 
-$\*：这个变量代表命令行中所有的参数，$\*把所有的参数看成一个整体
+# 免密登录配置
+ssh-keygen -t rsa            # 生成密钥对
+ssh-copy-id user@host        # 将公钥复制到远程主机
+```
 
-$@：这个变量也代表命令行中所有的参数，不过$@把每个参数区分对待
+## 6. 软件包管理（理论）
 
-~~~shell
-$*
-$@
-~~~
+| 发行版           | 包管理器    | 安装命令                       |
+| ------------- | ------- | -------------------------- |
+| Debian/Ubuntu | apt     | `sudo apt install package` |
+| CentOS/RHEL   | yum/dnf | `sudo yum install package` |
+| Arch          | pacman  | `sudo pacman -S package`   |
+| macOS         | brew    | `brew install package`     |
 
-##### $?
+```bash
+# Ubuntu/Debian
+sudo apt update              # 更新软件源索引
+sudo apt install nginx       # 安装软件
+sudo apt remove nginx        # 卸载软件
+sudo apt search keyword      # 搜索软件
 
-**基本语法**
+# CentOS/RHEL
+sudo yum update
+sudo yum install nginx
+sudo yum remove nginx
+```
 
-功能描述：最后一次执行的命令的返回状态。如果这个变量的值为0，证明上一个命令正确执行；如果这个变量的值为非0（具体是哪个数，由命令自己来决定），则证明上一个命令执行不正确了。）
+## 7. Shell 进阶技巧
 
-~~~shell
-$?
-~~~
+### 7.1 引号与通配符的坑
 
-#### 运算符
+```bash
+# 变量加双引号防止空格拆分
+for file in "$@"; do echo "$file"; done
 
-**基本语法**
+# glob 通配符
+ls *.txt                     # 所有 txt 文件
+ls ?.txt                     # 单字符文件名
+find . -name "[ab]*.txt"     # a 或 b 开头
+```
 
-$((运算式)) 或 $[运算式]
+### 7.2 here-doc 与 here-string
 
-~~~shell
-s=$[(2+3)*4]
-echo $s
-~~~
+```bash
+# here-doc：多行输入
+cat <<EOF > config.txt
+name=Alice
+age=20
+EOF
 
-#### 条件判断
+# here-string：单行输入
+grep "Alice" <<< "Hello Alice"
+```
 
-**基本语法**
+### 7.3 子 shell 与作用域
 
-~~~shell
-test condition
-# condition 前后要有空格
-# 条件非空即为true，[ xxx ] 返回true，[] 返回false
-~~~
-
-**常用判断条件**
-
-- 两个整数之间比较
-
-  - -eq：等于（equals）
-  - -ne：不等于（not equals）
-  - -lt：小于（less than）
-  - -le：小于等于（less equals）
-  - -gt：大于（greater than）
-  - -ge：大于等于（greater equals）
-
-  注：如果是字符串之间的比较，用等号"="判断相等，用"!="判断不等
-
-- 按照文件权限进行判断
-
-  - -r：有读的权限（read）
-  - -w：有写的权限（write）
-  - -x：有执行的权限（execute）
-
-- 按照文件类型进行判断
-
-  - -e：文件存在（existence）
-  - -f：文件存在并且是一个常规的文件（file）
-  - -d：文件存在并且是一个目录（directory）
-
-  ~~~shell
-  # 示例 23 是否大于等于 22
-  [ 23 -ge 22 ]
-  # hello.sh是否具有写权限
-  [ -w hello.sh ]
-  # /home/test.txt 文件是否存在
-  [ -e /home/test.txt ]
-  # 多条件判断（&& 表示前一条命令执行成功时，才执行后一条命令，||表示上一条命令执行失败后，才执行下一条命令）
-  [ test ] && echo OK || echo notOK流程控制
-  ~~~
-
-#### 流程控制
-
-##### if
-
-**基本语法**
-
-~~~shell
-# 单分支
-if [ 条件判断式 ];then
-	程序
-fi
-# 或者
-if [ 条件判断式 ]
-then
-	程序
-fi
-# 多分支
-if [ 条件判断式 ]
-then
-	程序
-elif [ 条件判断式 ]
-then
-	程序
-else 
-	程序
-fi
-~~~
-
-**示例**
-
-~~~shell
+```bash
 #!/bin/bash
-if [ "$1"x = "if"x  ]
-then
-    echo "hello $1"
-fi
-~~~
+count=0
 
-##### case
-
-**基本语法**
-
-~~~shell
-case $变量名 in 
-"值1")
-	如果变量的值等于值1，则执行程序1
-"值2")
-	如果变量的值等于值2，则执行程序2
-;;
-	...
-*)
-	如果变量的值都不是以上的值，则执行此程序
-;;
-esac
-~~~
-
-注意：
-
-- case行尾必须为单词 in，每一个模式匹配必须以右括号 ")"结束。
-- 双分号 ";;" 表示命令序列结束，相当于java中的break
-- 最后的 "*)" 表示默认模式，相当于java中的default
-
-**示例**
-
-~~~shell
-#!/bin/bash
-case $1 in
-1)
-        echo "one"
-;;
-2)
-        echo "two"
-;;
-3)
-        echo "three"
-;;
-*)
-        echo "other number"
-;;
-esac
-~~~
-
-##### for
-
-**基本语法**
-
-~~~shell
-for ((初始值;循环控制条件;变量变化))
-do
-	程序
+# 管道会创建子 shell，变量修改不影响外部
+echo "a" | while read line; do
+    count=$((count+1))
 done
-~~~
-
-**示例**
-
-~~~shell
-#!/bin/bash
-for (( i=1;i <= $1; i++ ))
-do
-        sum=$[ $sum + $i ]
-done
-echo $sum
-~~~
-
-**基本语法2**
-
-~~~shell
-for 变量 in 值1 值2 值3...
-do
-	程序
-done
-~~~
-
-**示例**
-
-~~~shell
-#!/bin/bash
-echo "========================$*========================"
-for param in "$*"
-do
-        echo $param
-done
-echo "========================$@========================"
-for param in "$@"
-do
-        echo $param
-done
-~~~
-
-注意：
-
-- \$\* 和 \$@ 如果都不加双引号，则输出效果一样
-
-##### while
-
-**基本语法**
-
-~~~shell
-while [ 条件表达式 ]
-do
-	程序
-done
-~~~
-
-**示例**
-
-~~~shell
-echo "===================while================"
-a=1
-sum=0
-while [ $a -le $1 ]
-do
-        sum=$[ $sum + $a ]
-        a=$[ $a + 1 ]
-done
-echo "while sum:$sum"
-~~~
-
-#### 读取控制台输入
-
-##### read
-
-**基本语法**
-
-~~~shell
-read (选项) (参数)
-~~~
-
-**选项**
-
-- -p：指定读取值时的提示
-- -t：指定读取值时等待的时间（秒），如果 -t 不加表示一直等待
-
-**参数**
-
-变量：指定读取值的变量
-
-**示例**
-
-~~~shell
-#!/bin/bash
-
-read -t 10 -p "please your name:" name
-echo "welcome $name"
-~~~
-
-#### 函数
-
-##### 系统函数
-
-###### basename
-
-**基本语法**
-
-~~~shell
-basename [string/pathname][suffix]
-~~~
-
-**功能描述**
-
-basename命令会删掉所有的前缀包括最后一个（'/'）字符，然后将字符串显示出来。
-
-basename可以理解为取路径里的文件名称
-
-**选项：**suffix为后缀，如果suffix被指定了，basename会将pathname或string中的suffix去掉
-
-###### dirname
-
-**基本语法**
-
-~~~shell
-dirname 文件绝对路径
-~~~
-
-**功能描述**
-
-从给定的包含绝对路径的文件名中去除文件名（非目录的部分），然后返回剩下的路径（目录的部分）
-
-dirname 可以理解为取文件路径的绝对路径名称
-
-**示例**
-
-~~~shell
-#!/bin/bash
-
-filename=$(basename $0 .sh)
-filepath=$(cd $(dirname $0);pwd)
-echo "filename:$filename"
-echo "filepath:$filepath"
-~~~
-
-##### 自定义函数
-
-**基本语法**
-
-~~~shell
-[ function ] funname[()]
-{
-	Action;
-	[return int;]
-}
-~~~
-
-**注意：**
-
-- 必须在调用函数地方之前，先声明函数，shell脚本时逐行运行。不会像其他语言一样先编译。
-- 函数返回值，只能通过$?系统变量获得，可以显示加：return 返回，如果不加，将以最后一条命令运行结果作为返回值。return后跟数值n（0-255）
-
-**示例**
-
-~~~shell
-#!/bin/bash
-
-function add(){
-        s=$[$1+$2]
-        echo $s
-}
-read -p "please input first number:" a
-read -p "please input second number:" b
-sum=$(add $a $b)
-echo "sum:"$sum
-~~~
-
-#### 按时规范文件
-
-~~~shell
-#!/bin/bash
-
-# 首先判断输入参数个数是否为1
-if [ $# -ne 1]
-then
-	echo "参数个数错误！应该输入一个参数，作为归档目录名"
-	exit
-fi
-
-# 从参数中获取目录名
-if [ -d $1 ]
-then
-	echo
-else
-	echo
-	echo "目录不存在！"
-	echo
-	exit
-fi
-
-DIR_NAME=$(basename $1)
-DIR_PATH=$(cd $(dirname $1);pwd)
-
-# 获取当前日期
-DATE=$(date +%y%m%d)
-
-# 定义生成的归档文件名称
-FILE=archive_${DIR_NAME}_$DATE.tar.gz
-
-DEST=/root/archive/$FILE
-
-# 开始归档目录文件
-echo "开始归档..."
-echo
-
-tar -czf $DEST $DIR_PATH/$DIR_NAME
-
-if [ $? -eq 0 ]
-then 
-	echo 
-	echo "归档成功！"
-	echo "归档文件为：$DEST"
-	echo
-else
-	echo "归档出现问题!"
-	echo
-fi
-exit
-~~~
-
-#### 文本处理工具
-
-##### cut
-
-cut命令从文件的每一行剪切字节、字符和字段并将这些字节、字符和字段输出
-
-**基本用法**
-
-~~~shell
-# 默认分隔符是制表符
-cut [选项参数] filename
-~~~
-
-**选项参数说明**
-
-- -f：列号，提取第几列
-- -d：分隔符，按照指定分隔符分割列，默认是制表符 "\t"
-- -c：按字符进行切割，后加 n 表示取第几列，比如 -c l
-
-**示例**
-
-~~~shell
-# 以空格分隔取第一列
-cut -d " " -f 1 cut.txt
-~~~
-
-##### awk
-
-一个强大的文本分析工具，把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行分割处理
-
-**基本用法**
-
-~~~shell
-awk [选项] '/pattern/{action1} /pattern/{action2}...' filename
-~~~
-
-pattern：表示awk在数据中查找的内容，就是匹配模式
-
-action：在找到匹配内容时所执行的一系列命令
-
-**选项参数说明**
-
-- -F：指定输入文件分隔符
-- -v：赋值一个用户定义变量
-
-**内置变量**
-
-- FILENAME：文件名
-- NR：已读的记录数（行号）
-- NF：浏览记录的域的个数（切割后，列的个数）
-
-**示例**
-
-~~~shell
-cat /etc/passwd | awk -F ":" '/^root/ {print $7}'
-
-cat /etc/passwd | awk -F ":" 'BEGIN{print "user,shell"}{print $1","$7}END{print "end of file"}'
-
-cat /etc/passwd | awk -F ":" -v i=1 '{print $3+i}'
-~~~
-
+echo $count        # 仍然是 0
+
+# 用进程替换避免子 shell
+while read line; do
+    count=$((count+1))
+done < <(echo "a")
+echo $count        # 1
+```
+
+## 8. 性能优化与最佳实践
+
+### 8.1 命令优化
+
+```bash
+# 避免无用 cat
+cat file.txt | grep "x"     # 不推荐
+grep "x" file.txt           # 推荐（少一个进程）
+
+# 优先用内置命令
+# echo、printf、test 是 shell 内置，比外部命令快
+
+# 大量文件用 xargs 批量处理
+find . -name "*.log" -print0 | xargs -0 grep -l "ERROR"
+```
+
+### 8.2 脚本最佳实践清单
+
+- 脚本开头写 `#!/bin/bash` 和 `set -euo pipefail`，提升健壮性。
+- 变量引用一律加双引号（`"$var"`），避免空格和空值问题。
+- 使用 `local` 声明函数内变量，避免全局污染。
+- 命令替换用 `$()` 而非反引号。
+- 错误处理写入 stderr（`>&2`），并以非零码退出。
+- 测试条件用 `[[ ]]`（bash 增强版）更安全，支持模式匹配。
+- 复杂脚本用 `shellcheck` 做静态检查。
+
+## 9. 常见问题排查
+
+```text
+Q: 执行脚本报 "Permission denied"？
+A: 需要 chmod +x script.sh 赋予执行权限，或用 bash script.sh 运行。
+
+Q: 报 "$'\r': command not found"？
+A: 脚本含 Windows 换行符（CRLF），用 dos2unix 转换或 sed -i 's/\r$//' 处理。
+
+Q: 变量在管道中修改后不生效？
+A: 管道创建子 shell，用进程替换 `< <(...)` 或 here-string 避免。
+
+Q: grep 匹配到二进制文件乱码？
+A: 加 -I 参数忽略二进制文件，或用 -a 强制当文本处理。
+
+Q: 中文文件名乱码？
+A: 检查 locale 设置，确保 UTF-8 编码（export LANG=zh_CN.UTF-8）。
+```
+
+---
+
+# 附录
+
+## 学习路线建议
+
+| 阶段    | 内容                    | 目标               |
+| ----- | --------------------- | ---------------- |
+| 第 1 周 | 常用命令篇 1~10            | 熟练文件操作、文本处理、权限管理 |
+| 第 2 周 | Shell 脚本篇 1~10        | 能编写中等复杂度的自动化脚本   |
+| 第 3 周 | Shell 脚本篇 11~13 + 进阶篇 | 掌握调试、实战脚本、系统管理   |
+
+## 练习项目
+
+1. 写一个脚本统计指定目录下不同类型文件的数量。
+2. 写一个日志分析脚本，统计 HTTP 状态码分布（200/404/500）。
+3. 写一个批量重命名脚本，将文件名中的空格替换为下划线。
+4. 写一个备份脚本，按日期归档并保留最近 7 天的备份。
+5. 写一个系统监控脚本，当磁盘使用率超过阈值时发邮件告警。
+6. 用 awk 写一个报表脚本，统计 CSV 文件中各分类的销售额。
+
+## 推荐资源
+
+- GNU Bash 手册：<https://www.gnu.org/software/bash/manual/>
+- Linux 命令大全：<https://www.runoob.com/linux/linux-command-manual.html>
+- ShellCheck（脚本静态检查）：<https://www.shellcheck.net/>
+- ExplainShell（命令解析）：<https://explainshell.com/>
+
+## 自测题
+
+1. `ls -la` 输出中第一列的 `-` 和 `d` 分别表示什么？
+2. `rm -rf` 为什么危险？使用前应如何确认？
+3. `grep -v`、`grep -n`、`grep -c`、`grep -E` 分别有什么作用？
+4. `sed 's/old/new/g'` 中 `g` 的作用是什么？`-i` 参数有什么风险？
+5. awk 中 `$1`、`$2`、`$0` 分别表示什么？`END` 块何时执行？
+6. 权限 `755` 和 `644` 分别代表什么？
+7. Shell 中单引号和双引号的区别是什么？
+8. `$?`、`$#`、`$@`、`$0` 分别代表什么？
+9. `[` 条件测试时为什么左右要有空格？
+10. `for i in {1..5}` 和 `for ((i=0;i<5;i++))` 有什么区别？
+11. Shell 函数中如何用 `return` 和 `echo` 返回结果？各自适用场景是什么？
+12. `${var:-default}` 与 `${var:=default}` 的区别是什么？
+13. `>` 与 `>>` 的区别是什么？如何将错误输出也重定向到文件？
+14. 为什么管道中的变量修改不影响外部？如何避免？
+15. `set -euo pipefail` 三个选项分别有什么作用？

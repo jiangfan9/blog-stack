@@ -1,1534 +1,1152 @@
 ---
 title: JavaScript
-date: 2021-09-01
-categories: [前端]
-tags: [JavaScript, 基础]
-description: JavaScript 核心概念学习笔记：原型、作用域、异步与 DOM 操作。
-coverImg: /images/cover-5.svg
+date: 2022-07-28
+categories: [语言]
+tags: [JavaScript, ES6, 异步, 前端]
+description: JavaScript 语言学习笔记，涵盖变量、闭包、原型链、事件循环、异步编程与高阶技巧。
+coverImg: /images/cover-1.svg
 permalink: /posts/javascript
 ---
 
+# JavaScript 系统学习指南：从基础到高阶
 
+> 一份带代码示例的渐进式学习文档。建议按顺序阅读，每节的示例都可以直接复制到浏览器控制台或 Node.js 环境中运行。
 
-# JavaScript的6种数据类型
-
-## String
-
-> 字符串可以是引号中的任意文本。可以使用单引号或双引号.
-
-**常用方法**
-
-~~~javascript
-var str = "aaadererer23242432";
-//计算字符串的长度 
-console.log(str.length);//18
-//字符串中某一个指定的字符首次出现的位置(从0开始)
-console.log(str.indexOf('d'));//3
-//把两个字符串连接起来
-var str2 = "ereretsfdf";
-console.log(str.concat(str2));//aaadererer23242432ereretsfdf
-//字符串中的替换
-var str3 = str.replace(/d/,"b")
-console.log(str3);
-//charCodeAt方法返回一个整数，代表指定位置字符的Unicode编码。
-console.log(str.charCodeAt(0));//97
-//fromCharCode方法从一些Unicode字符串中返回一个字符串。
-console.log(String.fromCharCode(65));//A
-//charAt方法返回指定索引位置处的字符。如果超出有效范围的索引值返回空字符串。
-console.log(str.charAt(0));//a
-//slice方法返回字符串的片段。
-console.log(str.slice(0,3));//aaa
-//substring方法返回位于String对象中指定位置的子字符串。
-/*
-strObj.substring(start,end)
-说明：
-start指明子字符串的起始位置，该索引从0开始起算。
-end指明子字符串的结束位置，该索引从0开始起算。
-substring方法使用start和end两者中的较小值作为子字符串的起始点。如果start或end为NaN或者为负数，那么将其替换为0。
-*/
-console.log(str.substring(0,3));//aaa
-// substr方法返回一个从指定位置开始的指定长度的子字符串。
-/**
-  * strObj.substr(start[,length])
-  * 说明：
-  * start所需的子字符串的起始位置。字符串中的第一个字符的索引为0。
-  * length在返回的子字符串中应包括的字符个数。
-  */
-console.log(str.substr(0,4));//aaad
-//lastIndexOf方法返回String对象中字符串最后出现的位置。如果没有匹配到子字符串，则返回-1。
-/**
-  * strObj.lastIndexOf(substr[,startindex])
-  * 说明：
-  * substr要在String对象内查找的子字符串。
-  * startindex该整数值指出在String对象内进行查找的开始索引位置。如果省略，则查找从字符串的末尾开始。
-  */
-console.log(str.lastIndexOf("a",3));//2
-//search方法返回与正则表达式查找内容匹配的第一个字符串的位置。
-/**
-  * strObj.search(reExp)
-  * 说明：
-  * reExp包含正则表达式模式和可用标志的正则表达式对象。
-  */
-console.log(str.search("d"));//3
-//将一个字符串分割为子字符串，然后将结果作为字符串数组返回。
-/**
-  * strObj.split([separator[,limit]])
-  * 说明：
-  * separator字符串或 正则表达式 对象，它标识了分隔字符串时使用的是一个还是多个字符。如果忽略该选项，返回包含整个字符串的单一元素数组。
-  * limit该值用来限制返回数组中的元素个数。
-  */
-var str4 = "aa bb cc dd ee";
-console.log(str4.split(" ",3));//["aa", "bb", "cc"]
-~~~
-
-## Number
-
-> NaN：即非数值（Not a Number）。任何涉及NaN的操作都会返回NaN，NaN与任何值都不相等
-
-## Boolean
-
-> Boolean类型有两个字面值：true和false。**true不一定等于1，false不一定等于0。只有Number（true）Number(false)才是1或0，**注意的是true和false是区分大小写的。 
-
-## Null
-
-> null值表示一个空指针对象
->
-> 注意:没有必要把一个变量的值初始化为undefined，但对于意在保存对象的变量则应明确的初始化为null值
-
-## Undefine
-
-> 对未初始化和未声明的变量执行typeof操作符都会返回undefined
-
-## Object
-
-# typeof操作符
-
-> typeof操作符：用于检测给定变量的数据类型，对一个值试用typeof操作符可能返回下列某个字符串：
->
-> “undefined”——表示值未定义；
->
-> “boolean”——表示值是布尔值 ；
->
-> “string”——表示值是字符；
->
-> “number”——表示值是数值；
->
-> “object”——表示值是对象或null；
->
-> “function”——表示值是函数；
-
-# 强制类型转换
-
-## 1.将其他的数据类型转换为String
-
-### 方式一:toString()方法
-
-~~~javascript
-var a = 123;
-a = a.toString();
-console.log(typeof a);//string
-console.log(a);//123
-			
-var a = true;
-a = a.toString();
-console.log(typeof a);//string
-console.log(a);//true
-~~~
-
-**注意**
-
-> null和undefined这两个值没有toString()方法,如果调用他们的方法,会报错
-
-### 方式二:调用String()函数
-
-~~~javascript
-var a = 123;
-a = String(a);
-console.log(typeof a);//string
-console.log(a);//123
-
-a = true;
-a = String(a);
-console.log(typeof a);//string
-console.log(a);//true
-
-a = null;
-a = String(a);
-console.log(typeof a);//string
-console.log(a);//null
-
-a = undefined;
-a = String(a);
-console.log(typeof a);//string
-console.log(a);//undefined
-
-~~~
-
-> 使用String()函数做强制类型转换时
->
-> 对于Number和Boolean实际上就是调用toString()方法
->
-> 但是对于null和undefined,就不会调用toString()方法
->
-> 他会将null 直接转换为"null"
->
-> 他会将undefined 直接转换为"undefined "
-
-## 2.将其他的数据类型转换为Number
-
-### 方式一:调用Number函数
-
-~~~javascript
-//如果是纯数字的字符串,则直接将其转换为数字
-var a = "123";
-a = Number(a);
-console.log(typeof a);//number
-console.log(a);//123
-
-//如果字符串中有非数字的内容,则转换为NaN
-a = "123aaa";
-a = Number(a);
-console.log(typeof a);//number
-console.log(a);//NaN
-
-//如果字符串是一个空串或者是一个全是空格的字符串,则转换为0
-a = "";
-a = Number(a);
-console.log(typeof a);//number
-console.log(a);//0	
-
-/**
- * Boolean转数字
- * true 转成 1
- * false 转成 0
- */
-a = true;
-a = Number(a);
-console.log(typeof a);//number
-console.log(a);//1
-
-a = false;
-a = Number(a);
-console.log(typeof a);//number
-console.log(a);//0
-
-//null转数字 是0
-a = null;
-a = Number(a);
-console.log(typeof a);//number
-console.log(a);//0
-
-//undefined转数字 是NaN
-a = undefined;
-a = Number(a);
-console.log(typeof a);//number
-console.log(a);//NaN
-
-~~~
-
-### 方式二:parseInt(),parseFloat()
-
-> parseInt()可以将一个字符串中的有效的整数内容取出来,然后转为Number
->
-> parseFloat()与parseInt()类型,不同的是他可以取小数
-
-~~~javascript
-a = "123px";
-a = parseInt(a);
-console.log(typeof a);//number
-console.log(a);//123
-
-
-a = "123a123";
-a = parseInt(a);
-console.log(typeof a);//number
-console.log(a);//123
-
-a = "b123a123";
-a = parseInt(a);
-console.log(typeof a);//number
-console.log(a);//NaN
-
-a = "123.123a123";
-a = parseInt(a);
-console.log(typeof a);//number
-console.log(a);//123
-
-a = "123.123a123";
-a = parseFloat(a);
-console.log(typeof a);//number
-console.log(a);//123.123
-		
-a = "123.123.123a123";
-a = parseFloat(a);
-console.log(typeof a);//number
-console.log(a);//123.123
-
-/**
- * 如果对非String使用parseInt()或parseFloat()
- * 它会先将其转换为String然后再操作
- */
-a = "123.123";
-a = parseInt(a);
-console.log(typeof a);//number
-console.log(a);//123
-
-~~~
-
-## 3.将其他的数据类型转换为Boolean
-
-### 使用Boolean函数
-
-> 数字转Number 除了0和NaN,其余都是true
-
- ~~~javascript
-//数字转Number 除了0和NaN,其余都是true
-a = "123";
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//true
-
-
-a = "-123";
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//true
-
-a = Infinity;
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//true
-
-a = 0;
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//false
-
-a = NaN;
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//false
+## 目录
 
- ~~~
+- [写在前面](#写在前面)
+- [第一部分：基础篇](#第一部分基础篇)
+- [第二部分：进阶篇](#第二部分进阶篇)
+- [第三部分：高阶篇](#第三部分高阶篇)
+- [附录：学习路线与资源](#附录学习路线与资源)
 
-> 字符串转Boolean,除了空串,都是true
+---
 
-~~~javascript
-//字符串转Boolean,除了空串,都是true
-a = "";
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//false
-
-a = "false";
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//true
+## 写在前面
 
-~~~
-
-> null和undefined都会转换为false
-
-~~~javascript
-//null和undefined都会转换为false
-a = null;
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//false
-
-a = undefined;
-a = Boolean(a);
-console.log(typeof a);//boolean
-console.log(a);//false
-~~~
-
-# 运算符优先级
-
-![](https://fanaidi.gitee.io/blogimgs/JavaScript/%E8%BF%90%E7%AE%97%E7%AC%A6%E4%BC%98%E5%85%88%E7%BA%A7.png)
-
-# 对象的简介
+### 如何运行文中的代码
 
-## 分类
+1. **浏览器控制台**：按 `F12` 打开开发者工具，切换到 `Console`，粘贴代码回车即可。
+2. **Node.js**：安装 Node.js 后，把代码保存为 `demo.js`，运行 `node demo.js`。本文涉及 DOM 的示例需在浏览器中运行。
 
-### 1.内建对象
+### 推荐学习顺序
 
-> 由ES标准中定义的对象,在任何的ES的实现中都可以使用
->
-> 比如: Math String Number Boolean Function Object
-
-### 2.宿主对象
-
-> 由JS的运行环境提供的对象,目前来讲主要由浏览器提供的对象
->
-> 比如 BOM DOM
-
-### 3.自定义对象
-
-> 由开发人员自己创建的对象
-
-## 对象的基本操作
-
-### 创建对象
-
-> 使用new关键字调用的函数,是构造函数constructor
->
-> 构造函数是专门用来创建对象的函数
-
-~~~javascript
-var obj = new Object();
-~~~
-
-### 向对象添加属性
-
-~~~javascript
-obj.name = "孙悟空";
-obj.gender = "男";
-obj.age = 18; 
-~~~
-
-![](https://fanaidi.gitee.io/blogimgs/JavaScript/%E6%B7%BB%E5%8A%A0%E5%B1%9E%E6%80%A7.png)
-
-### 读取对象中的属性
-
-> 语法: 对象.属性名
->
-> 如果读取对象的属性不存在,不会报错而是返回undefined
-
-~~~javascript
-console.log(obj.age);
-~~~
-
-### 修改对象中的属性值
-
-> 语法: 对象.属性 = 新值
-
-~~~
-obj.age = 20;
-~~~
-
-### 删除对象的属性
-
-> 语法: delete 对象.属性
-
-~~~javascript
-var obj = new Object();
-obj.name = "孙悟空";
-obj.gender = "男";
-obj.age = 18; 
-delete obj.age;
-console.log(obj);
-~~~
-
-![](https://fanaidi.gitee.io/blogimgs/JavaScript/%E5%88%A0%E9%99%A4%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B1%9E%E6%80%A7.png)
-
-### in运算符
-
-> 通过该运算符可以检查一个对象中是否含有指定的属性
->
-> -如果有则返回true,没有返回false
->
-> -语法: "属性名"  in 对象
-
-~~~javascript
-//检查obj中是否含有test2属性
-console.log("test" in obj);
-~~~
-
-### 使用对象字面量创建一个对象
-
-> 使用对象字面量,可以在创建对象时,直接指定对象中的属性
->
-> 语法: {属性名:属性值,属性名:属性值,.....}
-
-~~~javascript
-var obj = {};
-obj.name = "swk";
-
-var obj1 = {name:"swk",age:18};
-~~~
-
-## 函数function
-
-> 函数function
->
-> -函数也是一个对象
->
-> -函数中可以封装一些功能(代码),在需要时可以执行这些功能(代码)
->
-> -函数中可以保存一些代码在需要的时候调用
->
-> -使用typeof检查一个函数对象时,会返回function
-
-### 创建一个函数对象
-
-~~~javascript
-//可以将要封装的代码以字符串的形式传递给构造函数
-var fun = new Function("console.log('hello')");
-//封装到函数中的代码不会理解执行
-//函数中的代码会在函数调用的时候执行
-//调用函数语法: 	函数对象()
-fun();
-~~~
-
-### 使用函数声明来创建一个函数
-
-> 语法:
->
-> ​		function	函数名([形参1,形参2,....形参N]){
->
-> ​		语句....
->
-> }
-
-~~~javascript
-function fun2(){
-	console.log("hello world");
+```
+基础篇 → 进阶篇 → 高阶篇
+   ↑        ↑        ↑
+ 语法     思维     原理与工程化
+```
+
+不要跳过基础直接看高阶——JavaScript 的高阶概念（闭包、原型、事件循环）几乎都建立在基础语法之上。
+
+---
+
+# 第一部分：基础篇
+
+## 1. JavaScript 是什么
+
+JavaScript 是一门运行在浏览器和服务器（Node.js）上的脚本语言，主要用于：
+
+- 网页交互（DOM 操作、事件处理）
+- 服务端开发（Node.js）
+- 移动应用 / 桌面应用（React Native、Electron）
+- 数据可视化、工具脚本等
+
+```js
+// 你的第一个 JavaScript 程序
+console.log('Hello, JavaScript!');
+```
+
+## 2. 变量与常量
+
+| 声明方式 | 作用域 | 可否重新赋值 | 可否重复声明 | 提升 |
+|---------|--------|-------------|-------------|------|
+| `var`   | 函数作用域 | 是 | 是 | 是（初始化为 undefined） |
+| `let`   | 块级作用域 | 是 | 否 | 有（但存在暂时性死区） |
+| `const` | 块级作用域 | 否 | 否 | 有（但存在暂时性死区） |
+
+```js
+// var：函数作用域，不推荐在现代代码中使用
+var a = 1;
+var a = 2; // 允许重复声明
+console.log(a); // 2
+
+// let：块级作用域，可重新赋值
+let count = 0;
+count = count + 1;
+console.log(count); // 1
+// let count = 3; // SyntaxError：不能重复声明
+
+// const：块级作用域，不可重新赋值（但对象内容可改）
+const PI = 3.14159;
+// PI = 3; // TypeError: Assignment to constant variable
+
+const user = { name: 'Alice' };
+user.name = 'Bob'; // ✅ 可以修改对象的属性
+// user = { name: 'Carol' }; // ❌ 不能重新赋值整个对象
+```
+
+**最佳实践**：默认用 `const`，需要重新赋值时用 `let`，几乎不用 `var`。
+
+## 3. 数据类型
+
+JavaScript 有 8 种基本数据类型：
+
+- **原始类型**（7 种）：`Number`、`String`、`Boolean`、`undefined`、`null`、`Symbol`、`BigInt`
+- **引用类型**（1 种）：`Object`（包括数组、函数、日期等）
+
+```js
+// 原始类型
+let num = 42;           // Number
+let str = 'hello';      // String
+let bool = true;        // Boolean
+let u = undefined;      // undefined：声明未赋值
+let n = null;           // null：空值
+let sym = Symbol('id'); // Symbol：唯一标识符
+let big = 9007199254740991n; // BigInt：大整数
+
+// 引用类型
+let obj = { name: 'Tom', age: 18 };
+let arr = [1, 2, 3];
+let fn = function () {};
+
+// typeof 判断类型
+console.log(typeof num);      // "number"
+console.log(typeof str);      // "string"
+console.log(typeof bool);     // "boolean"
+console.log(typeof u);        // "undefined"
+console.log(typeof n);        // "object" —— 历史遗留问题
+console.log(typeof sym);      // "symbol"
+console.log(typeof big);      // "bigint"
+console.log(typeof arr);      // "object"
+console.log(typeof fn);       // "function"
+console.log(typeof null);     // "object"（著名的 bug）
+
+// 更精确地判断引用类型
+console.log(Array.isArray(arr));        // true
+console.log(obj instanceof Object);     // true
+console.log(arr instanceof Array);      // true
+```
+
+## 4. 类型转换
+
+### 显式转换
+
+```js
+// 转数字
+console.log(Number('123'));     // 123
+console.log(parseInt('123px')); // 123
+console.log(parseFloat('3.14')); // 3.14
+console.log(Number('abc'));     // NaN
+
+// 转字符串
+console.log(String(123));       // "123"
+console.log((123).toString());  // "123"
+
+// 转布尔
+console.log(Boolean(1));        // true
+console.log(Boolean(0));        // false
+console.log(Boolean(''));       // false
+console.log(Boolean([]));       // true —— 空数组是对象，为真值
+```
+
+### 隐式转换
+
+```js
+console.log('5' + 3);   // "53" —— 字符串拼接
+console.log('5' - 3);   // 2 —— 减法会把字符串转成数字
+console.log('5' * 3);   // 15
+console.log(1 + '2' + 3); // "123"
+
+// 假值（falsy）：在布尔上下文中会转为 false 的值
+// false, 0, -0, 0n, "", null, undefined, NaN
+if (0) { console.log('不会执行'); }
+if ('hello') { console.log('会执行'); }
+```
+
+## 5. 运算符
+
+```js
+// 算术运算符
+console.log(5 + 3, 5 - 3, 5 * 3, 5 / 3, 5 % 3, 2 ** 3); // 8 2 15 1.666... 2 8
+
+// 赋值运算符
+let x = 10;
+x += 5; // 等价于 x = x + 5
+console.log(x); // 15
+
+// 比较运算符（推荐用 ===，避免隐式转换）
+console.log(1 == '1');   // true  —— 值相等（发生了隐式转换）
+console.log(1 === '1');  // false —— 严格相等，类型和值都要相同
+console.log(NaN === NaN); // false —— NaN 不等于任何值，包括自己
+
+// 逻辑运算符
+console.log(true && false); // false —— 与
+console.log(true || false); // true  —— 或
+console.log(!true);         // false —— 非
+
+// 三元运算符
+let age = 18;
+let status = age >= 18 ? '成年' : '未成年';
+console.log(status); // "成年"
+
+// 可选链（?.）：避免访问 undefined/null 属性时报错
+let user = { profile: { name: 'Alice' } };
+console.log(user?.profile?.name);  // "Alice"
+console.log(user?.address?.city);  // undefined（不会抛错）
+
+// 空值合并（??）：左侧为 null/undefined 时取右侧
+let port = null;
+console.log(port ?? 3000); // 3000
+console.log(0 ?? 3000);    // 0（注意与 || 的区别）
+```
+
+## 6. 流程控制
+
+```js
+// if / else if / else
+let score = 85;
+if (score >= 90) {
+  console.log('优秀');
+} else if (score >= 60) {
+  console.log('及格');
+} else {
+  console.log('不及格');
 }
-fun2();
-~~~
 
-### 使用函数表达式来创建函数
-
-> 语法 	var 函数名 = function([形参1,形参2,....形参N]){
->
-> ​	语句....
->
-> }
-
-~~~javascript
-var fun3 = function(){
-    console.log("hello");
+// switch
+let day = 3;
+switch (day) {
+  case 1: console.log('周一'); break;
+  case 2: console.log('周二'); break;
+  case 3: console.log('周三'); break;
+  default: console.log('其他');
 }
-~~~
 
-### 函数的返回值
+// for 循环
+for (let i = 0; i < 5; i++) {
+  console.log(i); // 0 1 2 3 4
+}
 
-> 如果return语句后不跟任何值就相当于返回一个undefined
->
-> 如果函数中不写return,则也会返回undefined
->
-> return后可以跟任意类型的值
+// while / do-while
+let i = 0;
+while (i < 3) {
+  console.log(i);
+  i++;
+}
 
-### 立即执行函数
+// for...of：遍历可迭代对象（数组、字符串等）—— 推荐
+let colors = ['red', 'green', 'blue'];
+for (const color of colors) {
+  console.log(color);
+}
 
->  定义:函数定义完,立即被调用
+// for...in：遍历对象的可枚举属性（不推荐用于数组）
+let person = { name: 'Tom', age: 18 };
+for (const key in person) {
+  console.log(key, person[key]);
+}
+```
 
-~~~javascript
-(function(){
-	alert("立即执行函数");
-})();
+## 7. 函数
 
-(function(a,b){
-    alert("a+b="+(a+b));
-})(123,456);
-~~~
+```js
+// 1. 函数声明（存在函数提升）
+function add(a, b) {
+  return a + b;
+}
 
-## 枚举对象中的属性
-
-> 使用for.....in语句
->
-> 语法:
->
-> for(var 变量 in 对象){}
->
-> for..in语句 对象中有几个属性,循环体就会执行几次 
-
-~~~javascript
-var obj = {
-	name:"孙悟空",
-	age:17,
-	gender:"男",
-	address:"花果山"
+// 2. 函数表达式
+const subtract = function (a, b) {
+  return a - b;
 };
-for(var n in obj){
-	console.log(obj[n]);
+
+// 3. 箭头函数（ES6，简洁且不绑定自己的 this）
+const multiply = (a, b) => a * b;
+const greet = name => `Hello, ${name}!`; // 单参数可省略括号
+const getObj = () => ({ name: 'Tom' }); // 返回对象需加括号
+
+console.log(add(1, 2));       // 3
+console.log(subtract(3, 1));  // 2
+console.log(multiply(2, 4));  // 8
+console.log(greet('Alice'));  // "Hello, Alice!"
+
+// 4. 默认参数
+function intro(name = 'Anonymous', age = 0) {
+  console.log(`${name}, ${age}岁`);
 }
-~~~
+intro();            // "Anonymous, 0岁"
+intro('Tom', 18);   // "Tom, 18岁"
 
-## 作用域
-
-### 全局作用域
-
-> -直接编写在script标签中的JS代码,都在全局作用域
->
-> -全局作用域在页面打开时创建,在页面关闭时销毁
->
-> -在全局作用域中有一个全局对象window,它代表的是一个浏览器的窗口,它由浏览器创建我们可以直接使用
->
-> -在全局作用域中:
->
-> ​							创建的变量都会作为window对象的属性保存
->
-> ​							创建的函数都会作为window对象的方法保存
-
-**注意**
-
-> 变量的声明提前
->
-> ​	-使用var关键字声明的变量,会在所有的代码执行之前被声明
->
-> 函数的声明提前
->
-> ​	-使用函数声明形式创建的函数 function 函数名(){}
->
-> ​		它会在所有的代码执行之前就被创建
->
-> ​	-使用函数表达式创建的函数,不会被声明提前,所以不能在声明前调用
->
-> ​	
-
-### 函数作用域
-
-> -调用函数时创建函数作用域,函数执行完毕以后,函数作用域销毁
->
-> -每调用一次函数就会创建一个新的函数作用域,他们之间是相互独立的
->
-> -在函数作用域中可以访问到全局作用域的变量
->
-> -在函数中要访问全局变量可以使用window对象
->
-> -在函数作用域也有声明提前的特性
-
-### this
-
-> 解析器在调用函数每次都会向函数内部传递进一个隐含的参数,这个隐含的参数就是this,this指向的是一个对象
->
-> 这个对象我们称为函数执行的上下文对象
->
-> 根据函数的调用方式的不同,this会指向不同的对象
->
-> 以函数形式调用,this是window
->
-> 以方法的形式调用,this是调用方法的对象
-
-## 使用工厂方法创建对象
-
- ~~~javascript
-function createObj(name,age,gender){
-	var obj = new Object();
-	obj.name = name;
-	obj.age = age;
-	obj.gender = gender;
-	return obj;
+// 5. 剩余参数（rest）：把多个参数收集为数组
+function sum(...nums) {
+  return nums.reduce((acc, cur) => acc + cur, 0);
 }
-var obj1 = createObj("孙悟空",18,"男");
-var obj2 = createObj("猪八戒",28,"男");
-var obj3 = createObj("沙和尚",38,"男");
-console.log(obj1);
-console.log(obj2);
-console.log(obj3);
- ~~~
+console.log(sum(1, 2, 3, 4)); // 10
 
-## 构造函数
+// 6. 立即执行函数表达式（IIFE）
+(function () {
+  console.log('立即执行');
+})();
+```
 
-> -构造函数就是一个普通的函数,创建方式和普通函数没有区别,
->
-> -不同的是构造函数习惯上首字母大写
->
-> -构造函数和普通函数的区别就是调用方式的不同
->
-> -普通函数是直接调用,而构造函数需要使用new关键字来调用
->
-> -构造函数的执行流程:
->
-> 1.立刻创建一个新对象
->
-> 2.将新建的对象设置为函数中的this,在构造函数中可以引用新建的对象 
->
-> 3.逐行执行函数中的代码
->
-> 4.将新建的对象作为返回值返回
+## 8. 数组
 
-~~~javascript
-//使用同一个构造函数创建的对象,我们称为一类对象,也将一个构造函数称为一个类
-function Person(name,age,gender){
-	this.name = name;
-	this.age = age;
-	this.gender = gender;
+```js
+let arr = [1, 2, 3];
+
+// 访问与修改
+console.log(arr[0]);     // 1
+arr[1] = 99;
+console.log(arr);        // [1, 99, 3]
+console.log(arr.length); // 3
+
+// 增删改
+arr.push(4);        // 末尾添加
+arr.pop();          // 末尾删除
+arr.unshift(0);     // 开头添加
+arr.shift();        // 开头删除
+console.log(arr);   // [0, 1, 99, 3]
+
+// 常用方法
+let nums = [1, 2, 3, 4, 5];
+console.log(nums.slice(1, 3));      // [2, 3] —— 截取，不改原数组
+console.log(nums.splice(1, 2));     // [2, 3] —— 删除，会改原数组
+console.log(nums.indexOf(4));       // 1 —— splice 后 3 已被删除，4 在索引 1；找不到返回 -1
+console.log(nums.includes(3));      // false —— splice 后 3 已不在数组中
+console.log(nums.join('-'));        // "1-4-5"
+console.log([...nums, 6]);          // [1, 4, 5, 6] —— 扩展运算符
+console.log(nums.reverse());        // [5, 4, 1] —— 反转（改原数组）
+
+// 数组排序（注意默认按字符串排序）
+console.log([10, 2, 1].sort());             // [1, 10, 2] —— 默认字典序
+console.log([10, 2, 1].sort((a, b) => a - b)); // [1, 2, 10] —— 数值升序
+```
+
+## 9. 对象
+
+```js
+// 创建对象
+let person = {
+  name: 'Alice',
+  age: 25,
+  // 方法
+  sayHello() {
+    console.log(`Hi, I'm ${this.name}`);
+  }
+};
+
+// 访问属性
+console.log(person.name);    // "Alice"
+console.log(person['age']);  // 25 —— 方括号语法
+person.sayHello();           // "Hi, I'm Alice"
+
+// 动态添加 / 删除属性
+person.email = 'alice@example.com';
+delete person.age;
+
+// 遍历对象
+for (const key in person) {
+  console.log(key, person[key]);
 }
-var per1 = new Person("孙悟空",18,"男");
-var per2 = new Person("猪八戒",28,"男");
-var per3 = new Person("沙和尚",38,"男");
-console.log(per1);
-console.log(per2);
-console.log(per3);
-~~~
+// 或
+console.log(Object.keys(person));   // ["name", "sayHello", "email"]
+console.log(Object.values(person)); // 值数组
+console.log(Object.entries(person)); // 键值对数组
 
-#### instanceof
+// 解构赋值（ES6）
+const { name, email } = person;
+console.log(name, email);
+```
 
-> -使用instanceof可以检查一个对象是否是一个类的实例
->
-> -语法: 对象 instanceof 构造函数
->
-> ​		-如果是,返回true,否则,返回false
->
-> -所有的对象都是Object的后代,所以任何对象和Object做instanceof检查时都会返回true
+## 10. 字符串
 
-## 原型对象
+```js
+let str = 'Hello World';
 
-> -原型 prototype
->
-> -我们所创建的每一个函数,解析器都会向函数中添加一个属性prototype,这个属性对于着一个对象,这个对象就是原型对象
->
-> -如果函数作为普通函数调用prototype没有任何作用
->
-> -当函数以构造函数调用时,它所创建的对象中都会有一个隐含的属性,指向该构造函数的原型对象.
->
-> -我们可以通过__proto__来访问该属性
->
-> -原型对象就相当于一个公共的区域,所有同一个类的实例都可以访问到这个原型对象,我们可以将对象中共有的内容,统一设置到原型对象中
->
-> -当我们访问对象的一个属性或者方法时,他会先在对象自身中寻找,如果有,则直接使用,如果没有则会去原型对象中寻找,如果找到则直接使用
->
-> -以后我们创建构造函数时,可以将这些对象共有的属性和方法,统一添加到构造函数的原型对象中,这样不用分别为每一个对象添加,也不会影响到全局作用域,就可以使每个对象都具有这些属性和方法了
+console.log(str.length);              // 11
+console.log(str.toUpperCase());       // "HELLO WORLD"
+console.log(str.toLowerCase());       // "hello world"
+console.log(str.includes('World'));   // true
+console.log(str.startsWith('Hello')); // true
+console.log(str.endsWith('World'));   // true
+console.log(str.indexOf('World'));    // 6
+console.log(str.slice(0, 5));         // "Hello"
+console.log(str.split(' '));          // ["Hello", "World"]
+console.log(str.replace('World', 'JS')); // "Hello JS"
+console.log('  hi  '.trim());         // "hi"
+console.log('ab'.repeat(3));          // "ababab"
 
-~~~javascript
-function MyClass(){
-	
+// 模板字符串（ES6）
+let name = 'Alice';
+let msg = `Hello, ${name}! 1 + 1 = ${1 + 1}`;
+console.log(msg); // "Hello, Alice! 1 + 1 = 2"
+```
+
+---
+
+# 第二部分：进阶篇
+
+## 1. 作用域与闭包
+
+### 作用域
+
+```js
+// 全局作用域
+let globalVar = 'global';
+
+function test() {
+  // 函数作用域
+  let localVar = 'local';
+  console.log(globalVar); // 可以访问全局
 }
-var mc = new MyClass();
-var mc2 = new MyClass();
-console.log(mc2.__proto__ == MyClass.prototype);//true
-~~~
 
-~~~javascript
-function Person(name,age,gender){
-	this.name = name;
-	this.age = age;
-	this.gender = gender;
+// console.log(localVar); // ReferenceError —— 外部访问不到函数内部变量
+
+// 块级作用域
+if (true) {
+  let blockVar = 'block';
+  console.log(blockVar); // "block"
 }
-Person.prototype.sayName = function(){
-	alert(this.name);
+// console.log(blockVar); // ReferenceError
+```
+
+### 闭包
+
+**闭包 = 函数 + 它能访问的外部变量**。即使外部函数已经返回，内部函数仍能记住并访问外部作用域的变量。
+
+```js
+function counter() {
+  let count = 0; // 被闭包"捕获"
+  return function () {
+    count++;
+    console.log(count);
+  };
 }
-var per1 = new Person("孙悟空",18,"男");
-var per2 = new Person("猪八戒",28,"男");
-var per3 = new Person("沙和尚",38,"男");
-console.log(per1);
-console.log(per2);
-console.log(per3);
-per1.sayName();
-per2.sayName();
-console.log(per1.sayName == per2.sayName)
-~~~
 
-## 数组(Array)
+const add = counter();
+add(); // 1
+add(); // 2
+add(); // 3 —— count 的状态被保留了下来
 
-> -数组也是一个对象
->
-> -它和我们普通对象功能类似,也是用来存储一些值的
->
-> -不同的是普通对象是使用字符串作为属性名的,而数组是使用数字作为索引操作元素
->
-> -索引:从0开始的整数就是索引
->
-> -数组的存储性能比普通对象要好,在开发中我们经常使用数组来存储一些数据
+const another = counter();
+another(); // 1 —— 新的独立闭包
 
-### 创建数组对象
-
-~~~javascript
-var arr = new Array();
-~~~
-
-### 向数组中添加元素
-
-> 语法: 数组[索引] = 值
-
-~~~javascript
-arr[0]=10;
-arr[1]=20;
-~~~
-
-### 读取数组中的元素
-
-> 语法: 数组[索引]
->
-> 如果读取不存在的索引,他不会报错而是返回undefined
-
-~~~javascript
-arr[0]
-~~~
-
-### 获取数组的长度
-
-> 语法: 数组.length
->
-> 对于连续的数组,使用length可以获取到数组的长度(元素的个数)
->
-> 对于非连续的数组,使用length会获取到数组的最大的索引+1
->
-> 尽量不要创建非连续的数组
-
-~~~javascript
-arr.length;
-~~~
-
-**注意**
-
-> -修改length
->
-> ​	如果修改的length大于原长度,则多出的部分会空出来
->
-> ​	如果修改的length小于原长度,则多出的元素会被删除
-
-### 向数组的最后一个位置添加元素
-
-> 语法: 数组[数组.length] = 值
-
-~~~javascript
-arr[arr.length] = 70;
-~~~
-
-### 使用字面量来创建数组
-
-~~~javascript
-var arr = [];
-var arr1 = [1,2,3,4,5,6,7];
-//使用构造函数创建数组时,也可以同时添加元素,将要添加的元素作为构造函数的参数传递
-//元素之间使用,隔开
-var arr2 = new Array(1,2,3);
-//数组中的元素可以是任意数据类型
-arr = ["hello",1,true,null,undefined];
-//也可以是对象
-var obj = {name:"孙悟空"};
-arr[arr.length] = obj;
-arr = [{name:"孙悟空"},{name:"猪八戒"}];
-//也可以是函数
-arr = [function(){alert(1)},function(){alert(2)}];
-//也可以是数组
-arr = [[1,2],[3,4]];
-~~~
-
-### 数组的四个方法
-
-#### push()
-
-> -该方法可以向数组的末尾添加一个或多个元素,并返回数组的新的长度
->
-> -可以将要添加的元素作为方法的参数传递
->
-> ​	这样这些元素将会自动添加到数组的末尾
-
-#### pop()
-
-> -该方法可以删除数组的最后一个元素,并返回被删除的元素
-
-#### unshift()
-
-> 向数组的开头添加一个或多个元素,并返回新的数组长度
-
-####  shift()
-
-> 可以删除数组的第一个元素,并将删除的元素返回
-
-### 数组的遍历
-
-~~~javascript
-var arr = ["a","b","c","d"];
-for(var i = 0;i &lt; arr.length;i++){
-    console.log(arr[i]);
+// 经典应用：私有变量
+function createBank(initial) {
+  let balance = initial;
+  return {
+    deposit(amount) { balance += amount; },
+    getBalance() { return balance; }
+  };
 }
-~~~
+const account = createBank(100);
+account.deposit(50);
+console.log(account.getBalance()); // 150
+// 外部无法直接访问 balance —— 实现了封装
+```
 
-#### forEach()方法
+> ⚠️ 注意：闭包会让变量常驻内存，滥用可能导致内存泄漏。
 
-> forEach()方法需要一个函数作为参数
->
-> -像这种函数,由我们创建但是不由我们调用的,我们称为回调函数
->
-> -数组中有几个元素,函数就会执行几次,每次执行时,浏览器会将遍历到的元素以实参的形式传递进来,我们可以定义形参,来读取这些内容
->
-> -浏览器会在回调函数中传递三个参数:
-> 	第一个参数,就是当前正在遍历的元素
->
-> ​	第二个参数,就是当前正在遍历的元素的索引
->
-> ​	第三个参数,就是正在遍历的数组
+## 2. this 关键字
 
-~~~javascript
-var arr = ["a","b","c","d"];
-arr.forEach(function(value , index , object){
-    console.log(value);
-    console.log(index);
-    console.log(object);
+`this` 的指向取决于**函数如何被调用**，而不是定义位置。
+
+```js
+// 1. 普通函数调用：this 指向全局对象（严格模式下为 undefined）
+function show() { console.log(this); }
+show();
+
+// 2. 方法调用：this 指向调用该方法的对象
+const obj = {
+  name: 'Tom',
+  say() { console.log(this.name); }
+};
+obj.say(); // "Tom"
+
+// 3. 构造函数中：this 指向新创建的实例
+function Person(name) { this.name = name; }
+const p = new Person('Alice');
+console.log(p.name); // "Alice"
+
+// 4. 箭头函数：没有自己的 this，继承外层作用域的 this
+const timer = {
+  delay: 1000,
+  start() {
+    setTimeout(() => {
+      console.log(this.delay); // 1000 —— 箭头函数继承 start 的 this
+    }, this.delay);
+  }
+};
+timer.start();
+
+// 5. call / apply / bind：显式改变 this 指向
+function greet(greeting) {
+  console.log(`${greeting}, ${this.name}`);
+}
+const user = { name: 'Bob' };
+greet.call(user, 'Hi');       // "Hi, Bob"
+greet.apply(user, ['Hello']); // "Hello, Bob"
+const boundGreet = greet.bind(user);
+boundGreet('Hey');            // "Hey, Bob"
+```
+
+## 3. 原型与原型链
+
+每个对象都有一个原型（`[[Prototype]]`），访问属性时若自身没有，就会沿原型链向上查找。
+
+```js
+function Person(name) {
+  this.name = name;
+}
+Person.prototype.sayHello = function () {
+  console.log(`Hi, I'm ${this.name}`);
+};
+
+const p = new Person('Alice');
+p.sayHello(); // "Hi, I'm Alice" —— 来自原型上的方法
+
+// 关系验证
+console.log(p.__proto__ === Person.prototype); // true
+console.log(Person.prototype.constructor === Person); // true
+console.log(Object.getPrototypeOf(p) === Person.prototype); // true
+
+// 原型链查找：实例 → 构造函数原型 → Object.prototype → null
+console.log(p.toString()); // 来自 Object.prototype
+console.log(p.__proto__.__proto__ === Object.prototype); // true
+
+// hasOwnProperty：判断属性是否为自身拥有
+console.log(p.hasOwnProperty('name'));     // true
+console.log(p.hasOwnProperty('sayHello')); // false（在原型上）
+```
+
+## 4. 面向对象：class
+
+`class` 是原型链语法糖，让面向对象写法更清晰。
+
+```js
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+  speak() {
+    console.log(`${this.name} makes a sound`);
+  }
+  // getter
+  get info() {
+    return `${this.name} the animal`;
+  }
+  // setter
+  set info(value) {
+    this.name = value;
+  }
+  // 静态方法
+  static create(name) {
+    return new Animal(name);
+  }
+}
+
+class Dog extends Animal {
+  constructor(name, breed) {
+    super(name); // 调用父类构造函数
+    this.breed = breed;
+  }
+  speak() {
+    console.log(`${this.name} barks`);
+  }
+}
+
+const dog = new Dog('Rex', 'Labrador');
+dog.speak();            // "Rex barks"
+console.log(dog.info);  // "Rex the animal"
+dog.info = 'Max';
+console.log(dog.name);  // "Max"
+const cat = Animal.create('Kitty');
+console.log(cat.info); // "Kitty the animal"
+```
+
+## 5. 数组高阶函数
+
+```js
+const nums = [1, 2, 3, 4, 5, 6];
+
+// map：映射，返回新数组
+console.log(nums.map(n => n * 2)); // [2, 4, 6, 8, 10, 12]
+
+// filter：过滤，返回满足条件的元素
+console.log(nums.filter(n => n % 2 === 0)); // [2, 4, 6]
+
+// reduce：归并，把数组计算成单个值
+console.log(nums.reduce((sum, n) => sum + n, 0)); // 21
+// 求最大值
+console.log(nums.reduce((max, n) => n > max ? n : max, nums[0])); // 6
+
+// find / findIndex：查找
+console.log(nums.find(n => n > 3));      // 4
+console.log(nums.findIndex(n => n > 3)); // 3
+
+// some / every：判断
+console.log(nums.some(n => n > 5));  // true —— 只要有一个满足
+console.log(nums.every(n => n > 0)); // true —— 全部满足
+
+// flat：扁平化
+console.log([1, [2, [3]]].flat(2)); // [1, 2, 3]
+```
+
+## 6. 异步编程
+
+### 回调 → Promise → async/await
+
+```js
+// 1. 回调函数（容易形成"回调地狱"）
+setTimeout(() => {
+  console.log('1 秒后执行');
+}, 1000);
+
+// 2. Promise：表示异步操作的最终完成或失败
+const p = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const success = true;
+    success ? resolve('成功') : reject('失败');
+  }, 1000);
 });
-~~~
+p.then(result => console.log(result))
+ .catch(error => console.error(error))
+ .finally(() => console.log('无论成功失败都执行'));
 
-### 数组的方法
+// Promise 静态方法
+Promise.all([Promise.resolve(1), Promise.resolve(2)])
+  .then(results => console.log(results)); // [1, 2] —— 全部成功
+Promise.race([Promise.resolve('a'), Promise.resolve('b')])
+  .then(result => console.log(result)); // "a" —— 取最先完成的
 
-#### slice()
+// 3. async/await：用同步写法写异步代码（推荐）
+function fetchUser(id) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve({ id, name: 'Alice' }), 500);
+  });
+}
 
-> -可以用来提取数组中的指定元素
->
-> -该方法不会改变元素数组,而是将截取到的元素封装到一个新数组中返回
->
-> -参数:
->
-> ​	1.截取开始的位置的索引,包含开始索引
->
-> ​	2.截取结束的位置的索引,不包含结束索引
->
-> ​		-第二个参数可以省略不写,此时会截取从开始索引往后的元素
->
-> ​	-索引可以传递一个负数,负数是从后往前计算
->
-> ​			-1表示最后一个
+async function main() {
+  try {
+    console.log('开始');
+    const user = await fetchUser(1); // 等待 Promise 完成
+    console.log(user);               // { id: 1, name: "Alice" }
+  } catch (error) {
+    console.error(error);
+  }
+}
+main();
+```
 
-#### splice()
+## 7. 事件循环（Event Loop）
 
-> -可以用于删除数组中的指定元素
->
-> -使用splice()会影响到原数组,会将指定元素从原数组中删除,并将删除的元素作为返回值返回
->
-> -参数:
->
-> ​	1.第一个,表示开始位置的索引
->
-> ​	2.第二个,表示删除的数量
->
-> ​	3.第三个及以后,可以传递一些新的元素,这些元素将会自动插入到开始位置索引的前面
+JavaScript 是单线程的，通过事件循环实现异步：
 
-#### concat()
+```
+调用栈 (Call Stack)
+    ↓ 清空后
+微任务队列 (Microtask): Promise.then / await / queueMicrotask
+    ↓ 全部执行完
+宏任务队列 (Macrotask): setTimeout / setInterval / I/O
+```
 
-> 可以连接两个或多个数组,并将新的数组返回
->
-> ​	-该方法不会对原数组产生影响
+```js
+console.log('1 —— 同步');
 
-~~~javascript
-var result = arr.concat(arr2,"a","b");
-~~~
+setTimeout(() => console.log('5 —— 宏任务 setTimeout'), 0);
 
-#### join()
+Promise.resolve()
+  .then(() => console.log('3 —— 微任务 Promise'));
 
-> -该方法可以将数组转换为一个字符串
->
-> -该方法不会对原数组产生影响,而是将转换后的字符串作为结果返回
->
-> -在join中可以指定一个字符串作为参数,这个字符串将会成为数组中元素的连接符
->
-> ​	如果不指定连接符,则默认使用,作为连接符
+async function asyncFn() {
+  console.log('2 —— 同步（async 函数体内）');
+  await Promise.resolve();
+  console.log('4 —— 微任务（await 之后）');
+}
+asyncFn();
 
-#### reverse()
+// 输出顺序：1 → 2 → 3 → 4 → 5
+// 记忆口诀：同步先行 → 微任务 → 宏任务
+```
 
-> -该方法用来反转数组(颠倒顺序)
->
-> -该方法会直接修改原数组
+## 8. 模块化
 
-#### sort()
+```js
+// ===== math.js（ES Module）=====
+export const PI = 3.14159;
+export function add(a, b) { return a + b; }
+export default function multiply(a, b) { return a * b; }
+```
 
-> -可以用来对数组中的元素进行排序
->
-> -也会影响原数组,默认按照unicode编码进行排序
->
-> -即使对于纯数字的数组,使用sort()排序时,也会按照Unicode编码来排序
->
-> ​	所以对数字进行排序时,可能会得到错误的结果
->
-> -我们可以自己来指定规则
->
-> ​	我们可以在sort()中添加一个回调函数来指定排序规则,回调函数中需要定义两个形参,浏览器将会分别使用数组中的元素作为实参去调用回调函数,使用哪个元素调用不确定,但是肯定的是在数组中a一定在b前面 
->
-> -浏览器会根据回调函数的返回值来决定元素的顺序,
->
-> ​	如果返回一个大于0的值,则元素会交换位置
->
-> ​	如果返回小于0的值,则元素位置不变
->
-> ​	如果返回0,则认为两个元素相等,位置不变 
+```js
+// ===== main.js =====
+import multiply, { PI, add } from './math.js';
+console.log(add(1, 2), multiply(2, 3), PI);
+```
 
-~~~java
-arr = [1,2,4,11,3,5];
-//方法一
-arr.sort(function(a,b){
-    if(a>b){
-        return 1;
-    }else if(a &lt; b){
-        return -1;
-    }else{
-        return 0;
+```js
+// CommonJS（Node.js 传统写法）
+// math.js：module.exports = { add, PI };
+// main.js：const { add, PI } = require('./math');
+
+// 动态导入（按需加载）
+// import('./math.js').then(module => console.log(module.add(1, 2)));
+```
+
+## 9. DOM 操作与事件
+
+```js
+// 选择元素
+const box = document.querySelector('.box');
+const items = document.querySelectorAll('li');
+
+// 修改内容与属性
+box.textContent = '新文本';
+box.innerHTML = '<strong>加粗文本</strong>';
+box.classList.add('active');
+box.setAttribute('data-id', '123');
+
+// 修改样式
+box.style.color = 'red';
+
+// 创建与插入元素
+const p = document.createElement('p');
+p.textContent = '动态创建的段落';
+box.appendChild(p);
+
+// 事件监听
+box.addEventListener('click', event => {
+  console.log('被点击了', event.target);
+});
+
+// 事件委托：在父元素上监听子元素的事件
+document.querySelector('ul').addEventListener('click', e => {
+  if (e.target.tagName === 'LI') {
+    console.log('点击了列表项:', e.target.textContent);
+  }
+});
+```
+
+## 10. 错误处理
+
+```js
+// try / catch / finally
+try {
+  JSON.parse('invalid json'); // 故意制造错误
+} catch (error) {
+  console.error('捕获到错误:', error.message);
+} finally {
+  console.log('无论是否出错都会执行');
+}
+
+// 主动抛出错误
+function divide(a, b) {
+  if (b === 0) {
+    throw new Error('除数不能为 0');
+  }
+  return a / b;
+}
+try {
+  console.log(divide(10, 0));
+} catch (e) {
+  console.error(e.message); // "除数不能为 0"
+}
+
+// 常见错误类型：Error / TypeError / ReferenceError / SyntaxError / RangeError
+```
+
+---
+
+# 第三部分：高阶篇
+
+## 1. 执行上下文与调用栈
+
+执行上下文是代码执行时的"环境"，包含变量环境、词法环境、`this` 等。
+
+```js
+var a = 'global';
+
+function outer() {
+  var b = 'outer';
+  function inner() {
+    var c = 'inner';
+    console.log(a, b, c); // 通过作用域链访问所有变量
+  }
+  inner();
+}
+outer();
+
+// 调用栈：inner() 入栈 → outer() 入栈 → 全局上下文（栈底）
+// 执行顺序：后进先出，inner 执行完先出栈
+
+// var 提升 vs let 暂时性死区
+console.log(hoisted); // undefined —— var 声明提升，值为 undefined
+var hoisted = 1;
+// console.log(notHoisted); // ReferenceError —— let 的暂时性死区
+let notHoisted = 2;
+```
+
+## 2. 内存管理与垃圾回收
+
+内存生命周期：分配 → 使用 → 回收。现代引擎主要用**标记-清除**算法：从根对象出发，不可达的对象被回收。
+
+```js
+// 常见内存泄漏场景与规避
+
+// 1. 意外的全局变量
+function leak() {
+  leakedVar = '我是全局变量'; // 没用 var/let/const，会挂到 window
+}
+// 解决：使用严格模式 'use strict' 或始终声明变量
+
+// 2. 被遗忘的定时器 / 事件监听
+let timer = setInterval(() => { /* ... */ }, 1000);
+clearInterval(timer); // 不使用时一定要清除
+
+const btn = document.querySelector('button');
+const handler = () => console.log('click');
+btn.addEventListener('click', handler);
+btn.removeEventListener('click', handler); // 不使用时解绑
+
+// 3. 闭包持有大对象
+function bigClosure() {
+  const hugeData = new Array(1000000).fill('data');
+  return () => console.log(hugeData.length); // 闭包让 hugeData 无法被回收
+}
+// 解决：用完后手动置 null，或缩小闭包捕获范围
+```
+
+## 3. 迭代器与生成器
+
+```js
+// 可迭代协议：实现 Symbol.iterator 方法
+const arr = [1, 2, 3];
+const iterator = arr[Symbol.iterator]();
+console.log(iterator.next()); // { value: 1, done: false }
+console.log(iterator.next()); // { value: 2, done: false }
+console.log(iterator.next()); // { value: 3, done: false }
+console.log(iterator.next()); // { value: undefined, done: true }
+
+// for...of 的本质就是调用迭代器
+for (const item of arr) {
+  console.log(item);
+}
+
+// 生成器函数：function* + yield，可暂停/恢复执行
+function* idGenerator() {
+  let id = 1;
+  while (true) {
+    yield id++; // 暂停并产出一个值
+  }
+}
+const gen = idGenerator();
+console.log(gen.next().value); // 1
+console.log(gen.next().value); // 2
+console.log(gen.next().value); // 3
+
+// 生成器实现无限序列、协程式流程控制
+function* fibonacci() {
+  let [a, b] = [0, 1];
+  while (true) {
+    yield a;
+    [a, b] = [b, a + b];
+  }
+}
+const fib = fibonacci();
+let seq = '';
+for (let i = 0; i < 10; i++) {
+  seq += fib.next().value + ' ';
+}
+console.log(seq.trim()); // "0 1 1 2 3 5 8 13 21 34"
+```
+
+## 4. Proxy 与 Reflect
+
+`Proxy` 可以拦截并自定义对象的基本操作（读取、赋值、删除等）。
+
+```js
+// 基础拦截
+const target = { name: 'Tom', age: 18 };
+const proxy = new Proxy(target, {
+  get(obj, key) {
+    console.log(`读取属性: ${key}`);
+    return key in obj ? obj[key] : '默认值';
+  },
+  set(obj, key, value) {
+    console.log(`设置属性: ${key} = ${value}`);
+    if (key === 'age' && (value < 0 || value > 150)) {
+      throw new Error('年龄不合法');
     }
+    return Reflect.set(obj, key, value); // 用 Reflect 完成默认行为
+  }
 });
-//方法二
-arr.sort(function(a,b){
-    return a-b;
+console.log(proxy.name); // 输出日志 + "Tom"
+proxy.age = 20;          // 输出日志
+// proxy.age = 200;      // Error: 年龄不合法
+
+// 应用：数据校验
+function createReactive(obj) {
+  return new Proxy(obj, {
+    set(target, key, value) {
+      console.log(`视图更新: ${key} 变为 ${value}`);
+      return Reflect.set(target, key, value);
+    }
+  });
+}
+const state = createReactive({ count: 0 });
+state.count++; // "视图更新: count 变为 1" —— Vue 3 响应式原理的简化版
+```
+
+## 5. 深拷贝与浅拷贝
+
+```js
+const original = { a: 1, nested: { b: 2 } };
+
+// 浅拷贝：只复制第一层，嵌套对象仍共享引用
+const shallow = { ...original };
+shallow.nested.b = 99;
+console.log(original.nested.b); // 99 —— 原对象被影响
+
+// 深拷贝方式 1：JSON（简单但有局限）
+const deep1 = JSON.parse(JSON.stringify(original));
+deep1.nested.b = 100;
+console.log(original.nested.b); // 99 —— 互不影响
+// 局限：无法处理函数、undefined、Symbol、Date、循环引用、RegExp 等
+
+// 深拷贝方式 2：structuredClone（现代浏览器/Node 17+）
+const deep2 = structuredClone(original);
+
+// 深拷贝方式 3：手写递归（面试常考）
+function deepClone(obj, map = new WeakMap()) {
+  if (obj === null || typeof obj !== 'object') return obj; // 原始类型直接返回
+  if (obj instanceof Date) return new Date(obj);
+  if (obj instanceof RegExp) return new RegExp(obj);
+  if (map.has(obj)) return map.get(obj); // 处理循环引用
+
+  const clone = Array.isArray(obj) ? [] : {};
+  map.set(obj, clone);
+  for (const key of Reflect.ownKeys(obj)) {
+    clone[key] = deepClone(obj[key], map);
+  }
+  return clone;
+}
+const deep3 = deepClone(original);
+console.log(deep3);
+```
+
+## 6. 防抖与节流
+
+```js
+// 防抖（debounce）：停止触发后等待 n 毫秒才执行 —— 适用于搜索框输入
+function debounce(fn, delay) {
+  let timer = null;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+// 节流（throttle）：每 n 毫秒最多执行一次 —— 适用于滚动、按钮点击
+function throttle(fn, interval) {
+  let lastTime = 0;
+  return function (...args) {
+    const now = Date.now();
+    if (now - lastTime >= interval) {
+      fn.apply(this, args);
+      lastTime = now;
+    }
+  };
+}
+
+// 使用示例（浏览器中）
+// const search = debounce(() => console.log('发送请求'), 300);
+// input.addEventListener('input', search);
+// window.addEventListener('scroll', throttle(() => console.log('滚动'), 200));
+```
+
+## 7. 函数柯里化与组合
+
+```js
+// 柯里化：把多参数函数转成一系列单参数函数
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn.apply(this, args);
+    }
+    return (...nextArgs) => curried(...args, ...nextArgs);
+  };
+}
+const add = (a, b, c) => a + b + c;
+const curriedAdd = curry(add);
+console.log(curriedAdd(1)(2)(3)); // 6
+console.log(curriedAdd(1, 2)(3)); // 6
+
+// 偏函数：固定部分参数
+const multiply = (a, b) => a * b;
+const double = multiply.bind(null, 2);
+console.log(double(5)); // 10
+
+// 函数组合：把多个函数串联成管道（从右到左执行）
+const compose = (...fns) => x => fns.reduceRight((acc, fn) => fn(acc), x);
+const pipe = (...fns) => x => fns.reduce((acc, fn) => fn(acc), x);
+
+const add1 = x => x + 1;
+const times2 = x => x * 2;
+console.log(compose(add1, times2)(3)); // 7 —— 先 times2(3)=6，再 add1(6)=7
+console.log(pipe(add1, times2)(3));    // 8 —— 先 add1(3)=4，再 times2(4)=8
+```
+
+## 8. 常用设计模式
+
+```js
+// 1. 单例模式：保证一个类只有一个实例
+class Singleton {
+  static getInstance() {
+    if (!Singleton.instance) {
+      Singleton.instance = new Singleton();
+    }
+    return Singleton.instance;
+  }
+}
+console.log(Singleton.getInstance() === Singleton.getInstance()); // true
+
+// 2. 工厂模式：封装对象创建逻辑
+function createUser(type, name) {
+  const users = {
+    admin: { name, role: 'admin', permissions: ['read', 'write'] },
+    guest: { name, role: 'guest', permissions: ['read'] }
+  };
+  return users[type] || null;
+}
+console.log(createUser('admin', 'Alice'));
+
+// 3. 发布-订阅模式：解耦事件发布者与订阅者
+class EventEmitter {
+  constructor() { this.events = {}; }
+  on(event, fn) {
+    (this.events[event] ||= []).push(fn);
+  }
+  emit(event, ...args) {
+    (this.events[event] || []).forEach(fn => fn(...args));
+  }
+}
+const emitter = new EventEmitter();
+emitter.on('login', user => console.log('欢迎', user));
+emitter.emit('login', 'Alice'); // "欢迎 Alice"
+
+// 4. 模块模式：用闭包封装私有状态
+const counterModule = (function () {
+  let count = 0; // 私有
+  return {
+    increment: () => ++count,
+    getCount: () => count
+  };
+})();
+counterModule.increment();
+console.log(counterModule.getCount()); // 1
+```
+
+## 9. 性能优化要点
+
+```js
+// 1. 减少 DOM 操作：用文档片段批量插入
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 1000; i++) {
+  const li = document.createElement('li');
+  li.textContent = `Item ${i}`;
+  fragment.appendChild(li); // 在内存中操作，不触发重排
+}
+document.querySelector('ul').appendChild(fragment); // 只插入一次
+
+// 2. 事件委托：用一个监听器代替多个
+// （见进阶篇第 9 节示例）
+
+// 3. 缓存计算结果：记忆化（memoization）
+function memoize(fn) {
+  const cache = new Map();
+  return function (...args) {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) return cache.get(key);
+    const result = fn.apply(this, args);
+    cache.set(key, result);
+    return result;
+  };
+}
+const fib = memoize(n => n <= 1 ? n : fib(n - 1) + fib(n - 2));
+console.log(fib(40)); // 快速得出 102334155
+
+// 4. 避免循环中创建函数 / 重复计算
+// 5. 大计算量任务用 Web Worker，避免阻塞主线程
+// 6. 图片懒加载、代码分割、按需加载
+```
+
+## 10. 元编程与进阶特性
+
+```js
+// Symbol：创建唯一的键，避免属性名冲突
+const id = Symbol('id');
+const user = { [id]: 123, name: 'Alice' };
+console.log(user[id]); // 123
+
+// well-known Symbol：改变语言行为
+const arr = [1, 2, 3];
+arr[Symbol.iterator]; // 让数组可被 for...of 遍历
+console.log([1, 2][Symbol.iterator]().next());
+
+// Object.defineProperty：精确控制属性行为（Vue 2 响应式原理）
+let value = 1;
+const obj = {};
+Object.defineProperty(obj, 'value', {
+  get() { return value; },
+  set(newValue) {
+    console.log(`值从 ${value} 变为 ${newValue}`);
+    value = newValue;
+  },
+  enumerable: true,
+  configurable: true
 });
-console.log(arr);
-~~~
+obj.value = 2; // "值从 1 变为 2"
 
-#### call()和apply()
+// Reflect：操作对象的标准化方式
+console.log(Reflect.get(obj, 'value')); // 2
+Reflect.set(obj, 'value', 3);
+console.log(Reflect.has(obj, 'value')); // true
 
-> -这两个方法都是函数对象的方法,需要通过函数对象来调用
->
-> -当对函数调用call()和apply()都会调用函数执行
->
-> -在调用call和apply()可以将一个对象指定为第一个参数,此时这个对象将会称为函数执行时的this
->
-> -call()方法可以将实参在对象之后依次传递
->
-> -apply()方法需要将实参封装到一个数组中统一传递
->
-> -this的情况:
->
-> ​	1.以函数形式调用时,this永远都是window
->
-> ​	2.以方法的形式调用时,this是调用方法的对象
->
-> ​	3.以构造函数形式调用时,this是新创建的对象
->
-> ​	3.使用call()和apply()调用时,this是指定的对象
+// 装饰器（Decorator，需 Babel/TS 支持）—— 用于注解和修改类成员
+// @log
+// class MyClass { ... }
+```
 
-## Arguments
+---
 
-> 在调用函数时,浏览器每次都会传递进两个隐含的参数:
->
-> ​	1.函数的上下文对象this
->
-> ​	2.封装实参的对象arguments
->
-> ​		-arguments是一个类数组对象,它也可以通过索引来操作数据,也可以获取长度
->
-> ​		-在调用函数时,我们所传递的实参都会封装到arguments中
->
-> ​		-arguments.length可以用来获取实参的长度
->
-> ​		-我们即使不定义形参,也可以通过arguments来使用实参,只是比较麻烦 arguments[0]表示第一个实参
->
-> ​		-它里面有个属性叫callee,这个属性对应的函数对象就是当前正在执行的函数对象
+# 附录：学习路线与资源
 
-## Date对象
+## 建议练习路径
 
-#### 创建对象
+| 阶段 | 推荐练习项目 |
+|------|-------------|
+| 基础 | 待办事项列表、计算器、猜数字游戏 |
+| 进阶 | 天气预报应用（调用 API）、购物车、简易路由 |
+| 高阶 | 手写 Promise、响应式框架迷你版、任务调度器 |
 
-~~~javascript
-//创建date对象
-//如果直接使用构造函数创建一个Date对象,则会封装为当前代码执行的时间
-var date = new Date();
-console.log(date);
-///创建一个指定的时间对象
-//需要在构造函数中传递一个表示时间的字符串作为参数
-//日期的格式: 月份/日/年 时:分:秒
-var d2 = new Date("9/1/2021 12:01:23");
-console.log(d2);
-~~~
+## 推荐资源
 
-#### Date对象中的方法
+- **文档**：MDN Web Docs（JavaScript 权威参考）、JavaScript.info（系统教程）
+- **练习**：LeetCode（算法）、Codewars（趣味编程）、Frontend Mentor（实战项目）
+- **深入**：《你不知道的 JavaScript》系列、《JavaScript 高级程序设计》
 
-##### getDate()
+## 检验学习成果的自测题
 
-> 获取当前日期是几日
+1. `var`、`let`、`const` 的区别是什么？什么是暂时性死区？
+2. `==` 和 `===` 的区别？`NaN === NaN` 的结果是什么？
+3. 什么是闭包？它有哪些应用场景和隐患？
+4. `this` 的指向由什么决定？箭头函数的 `this` 有何特殊？
+5. 描述原型链查找过程。
+6. `Promise` 有哪几种状态？`Promise.all` 与 `Promise.race` 的区别？
+7. 事件循环中微任务和宏任务的执行顺序是怎样的？
+8. 深拷贝与浅拷贝的区别？`JSON.parse(JSON.stringify())` 有哪些局限？
+9. 防抖和节流的区别及各自适用场景？
+10. 闭包、定时器、事件监听为什么会造成内存泄漏？
 
-##### getDay()
-
-> 获取当前日期对象是周几
->
-> 会返回0-6的值,0表示周日,1表示周一
-
-##### getMonth()
-
-> 获取当前时间对象的月份
->
-> 会返回0-11的值,0表示1月,11表示12月
-
-##### getFullYear()
-
-> 获取当前日期对象的年份 
-
-##### getTime()
-
-> -获取当前日期对象的时间戳
->
-> -时间戳指的是1970年1月1日,0时0分0秒到当前日期所花费的毫秒数
->
-> -计算机底层在保存时间时使用都是时间戳
-
-~~~javascript
-//获取当前日期的时间戳
-time = Date.now();
-~~~
-
-## Math对象
-
-> -Math和其他的对象不同,它不是一个构造函数,它属于一个工具类,不用创建对象,它里面封装了数学运算相关的属性和方法
->
-> -比如 Math.PI表示圆周率
-
-### Math对象中的方法
-
-#### Math.abs()
-
-> 可以用来计算一个数的绝对值
-
-#### Math.ceil()
-
-> 可以对一个数进行向上取整,小数位只要有值,就自动进1
-
-#### Math.floor()
-
-> 可以对一个数进行向下取整,小数部分会被舍掉
-
-#### Math.round()
-
-> 可以对一个数进行四舍五入取整
-
-#### Math.random()
-
-> 可以用来生成0-1之间的随机数
-
-#### Math.max()
-
-> 可以获取多个数的最大值
-
-#### Math.min()
-
-> 可以获取多个数中的最小值
-
-#### Math.pow(x,y)
-
-> 返回x的y次幂
-
-#### Math.sqrt()
-
-> 用于对一个数进行开方运算
-
-## 包装类
-
-> 在JS中为我们提供了三个包装类,通过这三个包装类可以将基本数据类型的数据转换为对象
->
-> String()				-可以将基本数据类型字符串转换为String对象
->
-> Number()			-可以将基本数据类型的数字转换为Number对象
->
-> Boolean()			-可以将基本数据类型的布尔值转换为Boolean对象
-
-**注意**
-
-> -我们在实际应用中,不会使用基本数据类型的对象
->
-> -如果使用基本数据类型的对象,在做一些比较时,可能会带来一些不可预期的结果
->
-> 
->
-> -方法和属性只能添加给对象,不能添加给基本数据类型
->
-> ​		-浏览器会临时使用包装类将其转换为对象,然后再调用对象的属性和方法
->
-> ​		-调用完以后,再将其转换为基本数据类型
-
-~~~javascript
-var a = 123;
-a = a.toString();
-a.hello = "hello";
-console.log(a);
-console.log(a.hello);//undefined
-~~~
-
-## String
-
-> 在底层,字符串是以字符数组的形式保存的  
-
-### 获取字符串的长度
-
-~~~javascript
-var str = "Hello World";
-//length属性可以获取字符串的长度
-console.log(str.length);
-~~~
-
-### 方法
-
-#### chartAt()
-
-> 可以返回字符串中指定位置的字符
->
-> 根据索引获取指定的字符
-
-#### charCodeAt()
-
-> 获取指定位置字符的字符编码(Unicode编码)
-
-#### String.fromCharCode()
-
-> 可以根据字符编码去获取字符
-
-#### concat()
-
-> 可以用来连接两个或多个字符串
-
-#### indexOf()
-
-> -该方法可以检索一个字符串是否含有指定内容
->
-> -如果字符串中含有该内容,则会返回其第一次出现的索引
->
-> -如果没有找到指定的内容,则返回-1
->
-> -可以指定第二个参数,指定开始查找的位置
-
-#### lastIndextOf()
-
-> -该方法的用法和indexOf()一样,
->
-> ​		不同的是indexOf是从前往后找,
->
-> ​		而lastIndexOf是从后往前找
->
-> -也可以指定开始查找的位置
-
-#### slice()
-
-> -可以从字符串中截取指定的内容
->
-> -不会影响原字符串,而是将截取到的内容返回
->
-> -参数:
->
-> ​		第一个,开始位置的索引(包括开始位置)
->
-> ​		第二个,结束位置的索引(不包括结束位置)
->
-> ​			如果省略第二个参数,则会截取到后边所有的
->
-> ​		-也可以传递一个负数作为参数,负数的画将会从后边计算
-
-#### substring()
-
-> 可以用来截取一个字符串,和slice()类似
->
-> 参数:
->
-> ​		第一个:开始截取位置的索引(包括开始位置)
->
-> ​		第二个:结束位置的索引(不包括结束位置)
->
-> ​		不同的是,这个方法不能接受负值作为参数,如果传递了一个负值,则默认使用0
->
-> ​		而且它还自动调整参数的位置,如果第二个参数小于第二个,则自动交换
-
-#### substr()
-
-> 用来截取字符串
->
-> 参数:
->
-> ​		1.截取开始位置的索引
->
-> ​		2.截取的长度
-
-#### split()
-
-> 可以将一个字符串拆分为一个数组
-
-#### toUpperCase()
-
-> 可以将字符串转换成大写并返回
-
-#### toLowerCase()
-
-> 可以将字符串转换成小写并返回
-
-~~~javascript
-var str = "Hello World";
-//length属性可以获取字符串的长度
-console.log(str.length);
-var result = str.charAt(0);//H
-
-result = str.charCodeAt(0);//72
-
-result = String.fromCharCode(72);//H 
-
-result = str.concat("!!!");//Hello World!!!
-
-result = str.indexOf("l");//2
-
-result = str.indexOf("l",3);//3
-
-result = str.lastIndexOf("l");//9
-
-result = str.slice(1,2);//e 
-result = str.slice(1);//ello World
-
-result = str.substring(1,2);//e
-
-result = str.substr(1,2);//el
-
-result = str.split(" ");//["Hello", "World"]
-
-result = str.toUpperCase();//HELLO WORLD
-
-result = str.toLowerCase();//hello world
-
-console.log(result);
-~~~
-
-# 正则表达式
-
-> 正则表达式用于定义一些字符串的规则,计算机可以根据正则表达式,来检查一个字符串是否符合规则,获取将字符串中符合规则的内容提取出来
-
-## 创建正则表达式对象
-
-> 语法: var 变量 = new RegExp("正则表达式","匹配模式");
->
-> 使用typeof检查正则对象,会返回object
->
-> 在构造函数中可以传递一个匹配模式作为第二个参数
->
-> ​	可以是:
->
-> ​			i 忽略大小写 (ignore)
->
-> ​			g 全局匹配模式
-
-## 使用字面量创建正则表达式
-
-> 语法: var 变量 = /正则表达式/匹配模式
->
-> 使用字面量的方式创建更加简单
->
-> 使用构造函数更加灵活
-
-## 方法
-
-### test()
-
-> test()
->
-> 使用这个方法可以用来检查一个字符串是否符合正则表达式的规则,
->
-> 符合返回true,否则返回false
-
-~~~javascript
-//使用字面量创建正则表达式
-var reg = /a/i;
-/**
-* |表示或
-* []里的内容也是或的关系
-* [ab] == a|b
-* [a-z]表示任意的小写字母
-* [A-Z]任意大写字母
-* [A-z]任意字母
-* [^ ]除了
-* [0-9]表示任意数字
-*/
-//检查一个字符串中是否有a或b
-reg = /a|b/;
-//检查一个字符串中是否含有abc或adc或aec
-reg = /a[bde]c/;
-console.log(reg.test("abc"));
-~~~
-
-### search()
-
-> -可以搜索字符串中是否含有指定内容
->
-> -如果搜索到指定内容,则会返回第一次出现的索引,如果没有搜索到返回-1
->
-> -它可以接受一个正则表达式作为参数,然后会根据正则表达式去检索字符串
->
-> -search()只会查找第一个,即使设置全局匹配,也没用
-
-### match()
-
-> -可以根据正则表达式,从一个字符串中将符合条件的内容提取出来
->
-> -默认情况下我们的match只会找到第一个符合要求的内容,找到以后就停止检索
->
-> -我们可以设置正则表达式为全局匹配模式,这样就会匹配到所有的内容
->
-> ​	可以为一个正则表达式设置多个匹配模式,且顺序无所谓
->
-> -match()会将匹配到的内容封装到一个数组中返回,即使只查询到一个结果 
-
-### replace()
-
-> -可以将字符串中指定内容替换为新的内容
->
-> -参数:
->
-> ​		1.被替换的内容
->
-> ​		2.新的内容
->
-> -默认只会替换第一个
-
-### split()
-
-> 可以将一个字符串拆分为一个数组
->
-> 方法中可以传递一个正则表达式作为参数,这样方法将会根据正则表达式去拆分字符串
->
-> 这个方法即使不指定全局匹配,也会全都拆分
-
-## 量词
-
-> -通过量词可以设置一个内容出现的次数
->
-> -量词只对它前面的一个内容起作用
->
-> -{n} 正好出现n次
->
-> -{m,n}出现m-n次
->
-> -{m,}m次以上
->
-> -+至少一个,相当于{1,}
->
-> -* 0个或多个,相当于{0,}
->
-> ^ 表示开头　
->
-> $ 表示结尾
->
-> . 表示任意字符   \.表示.
->
-> \w 表示任意字母、数字
->
-> \W　除了字母、数字
->
-> \d　任意的数字［０－９］
->
-> \D　除了数字［0－9］
->
-> \s　空格
->
-> \S　除了空格
->
-> \b　单词边界
->
-> \B　除了单词边界
-
-~~~javascript
-//去除开头和结尾的空格
-reg = /^\s*|\s*$/g;
-var str = "    he  llo    ";
-str = str.replace(reg,"");
-console.log(str);//he  llo
-~~~
-
-# BOM
-
-## window
-
-> 代表的是整个浏览器的窗口,同时window也是网页中的全局对象
-
-## Navigator
-
-> -代表的当前浏览器的信息,通过该对象可以来识别不同的浏览器
->
-> -由于历史原因,Navigator对象中的大部分属性都已经不能帮助我们识别浏览器了
->
-> -一般我们只会使用userAgent来判断浏览器的信息
-
-## Location
-
-> -代表当前浏览器的地址栏信息,通过Location可以获取地址信息,或者操作浏览器跳转页面
->
-> -该对象中封装了浏览器的地址栏的信息
->
-> -如果直接将location属性修改为一个完整的路径,或相对路径,则页面会自动跳转到该路径,并且会生成相应的历史记录
->
-> -语法:location  = "www.baidu.com"
-
-#### assign()
-
-> 用来跳转到其他页面,作用和直接修改location一样
->
-> 语法: location.assign("www.baidu.com");
-
-#### reload()
-
-> -用于重新加载当前页面
->
-> -如果在方法中传递一个true,作为参数,则会强制清空缓存,刷新页面 语法: location.reload(true)
-
-#### replace()
-
-> -可以使用新的页面替换当前页面,调用完毕也会跳转页面
-
-## History
-
-> -代表浏览器的历史记录,可以通过该对象来操作浏览器的历史记录
->
-> ​		由于隐私原因,该对象不能获取到具体的历史记录,只能操作浏览器向前或向后翻页
->
-> ​		而且该操作只在当次访问时有效
-
-#### length属性
-
-> 可以获取到当前访问的链接数量
-
-##### back()
-
-> 可以用来回退到上一个页面,作用和浏览器的回退按钮一样
->
-> 语法: history.back()
-
-##### forward()
-
-> 可以跳转下一个页面,作用和浏览器的前进按钮一样
->
-> 语法: history.forward()
-
-##### go()
-
-> 可以用来跳转到指定页面
->
-> 它需要一个整数作为参数
->
-> ​	1:表示向前跳转一个页面
->
-> ​	2:表示向前跳转两个页面
->
-> ​	-1:向后跳转一个页面
->
-> ​	-2:向后跳转两个页面
->
-> 语法: history.go(index)
-
-## Screen
-
-> 代表用户的屏幕的信息,通过该对象可以获取到用户的显示器的相关的信息
-
-------
-
-**注意**
-
-> 这些BOM对象在浏览器中都是作为window对象的属性保存的,可以通过window对象来使用,也可以直接使用
-
-# 定时器
-
-## setInterval()
-
-> -定时调用
->
-> -可以将一个函数,每隔一段时间执行一次
->
-> -参数:
->
-> ​	1.回调函数,该函数会每隔一段时间被调用一次
->
-> ​	2.每次调用间隔的时间,单位是毫秒
->
-> -返回值:
->
-> ​		返回一个Number类型的数据
->
-> ​		这个数字用来作为定时器的唯一标识
-
-## clearInterval()
-
-> 可以用来关闭一个定时器
->
-> 方法中需要一个定时器的标识作为参数,这样将关闭标识对应的定时器
-
-## setTimeout()
-
-> -延时调用:
->
-> ​		延时调用一个函数不马上执行,而是隔一段时间以后执行,而且只会执行一次
->
-> -延时调用和定时调用的区别,定时调用会执行多次,而延时调用只会执行一次
->
-> -延时调用和定时调用实际上是可以互相代替的,在开发中可以根据自己的需要去选择
-
-## clearTimeout()
-
-> 用来关闭一个延时调用
+---
